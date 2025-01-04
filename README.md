@@ -8,7 +8,7 @@ A Laravel Nova implementation of the [tiptap editor for Vue.js](https://github.c
 > [!Warning]
 > If you are updating from `manogi/nova-tiptap`, please note that we have updated the namespace. For now, this is the only breaking change. You should replace all `Manogi\Tiptap\Tiptap` with `Marshmallow\Tiptap\Tiptap` and you are good to go. This new version also has support for **Nova 5**.
 
-> [!CREDIT]
+> [!IMPORTANT]
 > This is copy of the original package by [Sebastian Hilger](https://github.com/bastihilger), you can reference old issues and stuff on his [github page](https://github.com/bastihilger/nova-tiptap). He had to abandon this project, as he doesn't use Nova anymore. Because we do use it in our customer projects, we desided to create a new package to maintain.
 
 ## Installation
