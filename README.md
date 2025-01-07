@@ -1,5 +1,6 @@
-![GitHub](https://img.shields.io/github/license/marshmallow/nova-tiptap)
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/marshmallow/nova-tiptap)
+[![Version](https://img.shields.io/packagist/v/marshmallow/nova-tiptap)](https://github.com/marshmallow-packages/nova-tiptap)
+[![Issues](https://img.shields.io/github/issues/marshmallow-packages/nova-tiptap)](https://github.com/marshmallow-packages/nova-tiptap)
+[![Licence](https://img.shields.io/github/license/marshmallow-packages/nova-tiptap)](https://github.com/marshmallow-packages/nova-tiptap)
 
 # Laravel Nova Tiptap Editor Field
 
