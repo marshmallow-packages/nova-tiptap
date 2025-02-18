@@ -361,6 +361,10 @@ export default {
                 this.mode = 'html';
             }
         },
+
+        onSyncedField() {
+            this.htmlModeValue = this.value;
+        },
     },
 
     mounted() {
