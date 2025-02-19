@@ -281,6 +281,7 @@ export default {
             imagePath: '',
             fileDisk: '',
             filePath: '',
+            initialFieldValue: null,
         }
     },
 
@@ -363,7 +364,9 @@ export default {
         },
 
         onSyncedField() {
-            this.htmlModeValue = this.value;
+            if(!this.initialFieldValue) {
+                this.htmlModeValue = this.value;
+            }
         },
     },
 
@@ -546,6 +549,8 @@ export default {
                 }
             },
         });
+        
+        this.initialFieldValue = this.value;
     },
 
     beforeDestroy() {
