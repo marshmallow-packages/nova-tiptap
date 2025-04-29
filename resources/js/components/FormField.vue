@@ -8,7 +8,7 @@
         <template #field>
             <div style="position: relative; top: 0; left: 0">
                 <div
-                    v-show="!field.readonly"
+                    v-show="!currentField.readonly"
                     class="w-full bg-gray-100 rounded overflow-break dark:bg-gray-700"
                     style="z-index: 10; position: sticky; top: 0; left: 0"
                 >
@@ -272,8 +272,8 @@
                 return this.value;
             },
             buttons() {
-                let tmpButtons = this.field.buttons
-                    ? this.field.buttons
+                let tmpButtons = this.currentField.buttons
+                    ? this.currentField.buttons
                     : ["bold", "italic"];
 
                 return _.map(tmpButtons, function (button) {
@@ -284,26 +284,26 @@
             },
 
             headingLevels() {
-                return this.field.headingLevels
-                    ? this.field.headingLevels
+                return this.currentField.headingLevels
+                    ? this.currentField.headingLevels
                     : [1, 2, 3];
             },
 
             alignments() {
-                return this.field.alignments
-                    ? this.field.alignments
+                return this.currentField.alignments
+                    ? this.currentField.alignments
                     : ["start", "center", "end", "justify"];
             },
 
             alignElements() {
-                return this.field.alignElements
-                    ? this.field.alignElements
+                return this.currentField.alignElements
+                    ? this.currentField.alignElements
                     : ["heading", "paragraph"];
             },
 
             defaultAlignment() {
-                return this.field.defaultAlignment
-                    ? this.field.defaultAlignment
+                return this.currentField.defaultAlignment
+                    ? this.currentField.defaultAlignment
                     : "left";
             },
 
@@ -314,7 +314,9 @@
             },
 
             htmlTheme() {
-                return this.field.htmlTheme ? this.field.htmlTheme : "";
+                return this.currentField.htmlTheme
+                    ? this.currentField.htmlTheme
+                    : "";
             },
 
             tableIsActive() {
@@ -325,7 +327,9 @@
             },
 
             saveAsJson() {
-                return this.field.saveAsJson ? this.field.saveAsJson : false;
+                return this.currentField.saveAsJson
+                    ? this.currentField.saveAsJson
+                    : false;
             },
         },
 
@@ -346,6 +350,11 @@
             },
 
             onSyncedField() {
+                if (this.editor) {
+                    this.editor.setOptions({
+                        editable: !this.currentField.readonly,
+                    });
+                }
                 if (!this.initialFieldValue) {
                     this.htmlModeValue = this.value;
                 }
@@ -353,23 +362,35 @@
         },
 
         mounted() {
-            this.placeholder = this.field.placeholder
-                ? this.field.placeholder
-                : this.field.extraAttributes
-                ? this.field.extraAttributes.placeholder
+            this.placeholder = this.currentField.placeholder
+                ? this.currentField.placeholder
+                : this.currentField.extraAttributes
+                ? this.currentField.extraAttributes.placeholder
                 : "";
 
-            if (this.field.imageSettings && this.field.imageSettings.path) {
-                this.imagePath = this.field.imageSettings.path;
+            if (
+                this.currentField.imageSettings &&
+                this.currentField.imageSettings.path
+            ) {
+                this.imagePath = this.currentField.imageSettings.path;
             }
-            if (this.field.imageSettings && this.field.imageSettings.disk) {
-                this.imageDisk = this.field.imageSettings.disk;
+            if (
+                this.currentField.imageSettings &&
+                this.currentField.imageSettings.disk
+            ) {
+                this.imageDisk = this.currentField.imageSettings.disk;
             }
-            if (this.field.fileSettings && this.field.fileSettings.path) {
-                this.filePath = this.field.fileSettings.path;
+            if (
+                this.currentField.fileSettings &&
+                this.currentField.fileSettings.path
+            ) {
+                this.filePath = this.currentField.fileSettings.path;
             }
-            if (this.field.fileSettings && this.field.fileSettings.disk) {
-                this.fileDisk = this.field.fileSettings.disk;
+            if (
+                this.currentField.fileSettings &&
+                this.currentField.fileSettings.disk
+            ) {
+                this.fileDisk = this.currentField.fileSettings.disk;
             }
 
             let extensions = [
@@ -500,7 +521,7 @@
 
             if (
                 this.buttons.includes("codeBlock") &&
-                this.field.syntaxHighlighting
+                this.currentField.syntaxHighlighting
             ) {
                 extensions.push(
                     CodeBlockLowlight.extend({
@@ -520,7 +541,7 @@
             this.editor = new Editor({
                 extensions: extensions,
                 content: this.contentWithTrailingParagraph,
-                editable: !this.field.readonly,
+                editable: !this.currentField.readonly,
                 onCreate() {
                     try {
                         let content = JSON.parse(context.value);
