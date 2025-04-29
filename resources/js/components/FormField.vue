@@ -258,6 +258,11 @@
                 this.editor.commands.setContent(val);
                 this.updateValue(this.editor.getHTML());
             },
+            'currentField.readonly': function (val) {
+                if (this.editor) {
+                    this.editor.setEditable(!val);
+                }
+            }
         },
 
         computed: {
