@@ -219,6 +219,19 @@ class Tiptap extends Field
         ]);
     }
 
+    /**
+     * Set sanitize option to clean empty content.
+     *
+     * @param  bool  $sanitizeEmptyContent
+     * @return $this
+     */
+    public function sanitizeEmptyContent()
+    {
+        return $this->withMeta([
+            'sanitizeEmptyContent' => true,
+        ]);
+    }
+
     public function jsonSerialize(): array
     {
         return array_merge(parent::jsonSerialize(), [

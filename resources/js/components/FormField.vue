@@ -211,6 +211,7 @@
     import pretty from "pretty";
 
     import buttonHovers from "../mixins/buttonHovers";
+    import contentSanitizer from "../mixins/contentSanitizer";
 
     import { DependentFormField, HandlesValidationErrors } from "laravel-nova";
 
@@ -219,7 +220,12 @@
     import GalleryContentBlockExtension from "./content-blocks/GalleryContentBlockExtension.js";
 
     export default {
-        mixins: [DependentFormField, HandlesValidationErrors, buttonHovers],
+        mixins: [
+            DependentFormField,
+            HandlesValidationErrors,
+            buttonHovers,
+            contentSanitizer,
+        ],
 
         props: ["resourceName", "resourceId", "field"],
 
@@ -258,23 +264,25 @@
                 this.editor.commands.setContent(val);
                 this.updateValue(this.editor.getHTML());
             },
-            'currentField.readonly': function (val) {
+            "currentField.readonly": function (val) {
                 if (this.editor) {
                     this.editor.setEditable(!val);
                 }
-            }
+            },
         },
 
         computed: {
             contentWithTrailingParagraph() {
+                let sanitizedValue = this.sanitizeTiptapContent(this.value);
+
                 if (
-                    _.isString(this.value) &&
-                    _.endsWith(_.trim(this.value), "content-block>")
+                    _.isString(sanitizedValue) &&
+                    _.endsWith(_.trim(sanitizedValue), "content-block>")
                 ) {
-                    return this.value + "<p></p>";
+                    return sanitizedValue + "<p></p>";
                 }
 
-                return this.value;
+                return sanitizedValue;
             },
             buttons() {
                 let tmpButtons = this.currentField.buttons
@@ -340,7 +348,7 @@
 
         methods: {
             updateValue(value) {
-                this.value = value;
+                this.value = this.sanitizeTiptapContent(value);
             },
 
             switchMode() {
@@ -550,12 +558,27 @@
                 onCreate() {
                     try {
                         let content = JSON.parse(context.value);
-                        this.commands.setContent(content);
+                        let sanitizedContent =
+                            context.sanitizeTiptapContent(content);
+                        this.commands.setContent(sanitizedContent);
                     } catch {}
                 },
                 onUpdate() {
                     if (context.saveAsJson) {
                         let jsonContent = this.getJSON();
+                        // Sanitize each text node in the JSON content
+                        const sanitizeJsonContent = (node) => {
+                            if (node.type === "text" && node.text) {
+                                node.text = context.sanitizeTiptapContent(
+                                    node.text
+                                );
+                            }
+                            if (node.content) {
+                                node.content.forEach(sanitizeJsonContent);
+                            }
+                            return node;
+                        };
+                        jsonContent.content.forEach(sanitizeJsonContent);
                         context.updateValue(
                             JSON.stringify(jsonContent.content)
                         );

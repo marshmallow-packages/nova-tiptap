@@ -154,6 +154,15 @@ Tiptap::make('Content')
   ->saveAsJson() // Store content as JSON instead of HTML
 ```
 
+### Empty Content Sanitization
+
+By default, when a TipTap editor is empty, it returns an empty paragraph with styling (e.g., `<p style="text-align: left"></p>`). If you prefer to get an empty string instead (especially useful for translatable fields), you can enable the sanitization feature:
+
+```php
+Tiptap::make('Content')
+  ->sanitizeEmptyContent() // Return empty string for empty editor content
+```
+
 ## Read-Only Mode
 
 The Tiptap field supports Nova's native readonly functionality. When in readonly mode, the editor will display the content without allowing edits:
