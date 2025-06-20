@@ -44,8 +44,12 @@
             </font-awesome-icon>
         </template>
 
-        <template v-else>
+        <template v-else-if="innerHtml">
             <span class="font-bold" v-html="innerHtml"></span>
+        </template>
+
+        <template v-else>
+            <slot />
         </template>
     </button>
 </template>
@@ -88,7 +92,10 @@ import {
     faTable,
     faUnderline,
     faUndoAlt,
-    faUnlink
+    faUnlink,
+    faA,
+    faSwatchbook,
+    faDropletSlash
 } from '@fortawesome/free-solid-svg-icons';
 
 library.add(
@@ -119,7 +126,10 @@ library.add(
     faTable,
     faUnderline,
     faUndoAlt,
-    faUnlink
+    faUnlink,
+    faA,
+    faSwatchbook,
+    faDropletSlash
 );
 
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
