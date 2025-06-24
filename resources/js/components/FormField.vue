@@ -114,6 +114,14 @@
                                 </base-button>
                             </template>
 
+                            <template v-else-if="button == 'color'">
+                                <color-button
+                                    :editor="editor"
+                                    :colors="colors"
+                                >
+                                </color-button>
+                            </template>
+
                             <template v-else>
                                 <normal-button
                                     :editor="editor"
@@ -172,6 +180,7 @@
     import Superscript from "@tiptap/extension-superscript";
     import TextStyle from "@tiptap/extension-text-style";
     import Underline from "@tiptap/extension-underline";
+    import { Color } from "@tiptap/extension-color";
 
     import Heading from "@tiptap/extension-heading";
     import TextAlign from "@tiptap/extension-text-align";
@@ -201,6 +210,7 @@
     import PlaceholderBlockButton from "./buttons/PlaceholderBlockButton";
     import ContentBlockButton from "./buttons/ContentBlockButton";
     import BaseButton from "./buttons/BaseButton.vue";
+    import ColorButton from "./buttons/ColorButton.vue";
 
     import CodeBlockComponent from "./CodeBlockComponent";
     import EditHtml from "./EditHtml";
@@ -230,6 +240,7 @@
         props: ["resourceName", "resourceId", "field"],
 
         components: {
+            ColorButton,
             EditorContent,
             LinkButton,
             NormalButton,
@@ -300,6 +311,12 @@
                 return this.currentField.headingLevels
                     ? this.currentField.headingLevels
                     : [1, 2, 3];
+            },
+
+            colors() {
+                return this.currentField.colors
+                    ? this.currentField.colors
+                    : ['#000000', '#ff133b', '#0000ff', '#008000', '#ffff00', '#ffa500'];
             },
 
             alignments() {
@@ -440,6 +457,7 @@
                 }),
                 Strike,
                 TextStyle,
+                Color,
                 Underline,
                 Subscript,
                 Superscript,

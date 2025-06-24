@@ -47,8 +47,9 @@ Tiptap::make('Content')
 ### Available Buttons
 
 | Button           | Description                                  |
-| ---------------- | -------------------------------------------- |
+|------------------|----------------------------------------------|
 | `heading`        | Text headings (H1, H2, H3, etc.)             |
+| `color`          | Color text formatting                        |
 | `bold`           | Bold text formatting                         |
 | `italic`         | Italic text formatting                       |
 | `strike`         | Strikethrough text                           |
@@ -113,6 +114,14 @@ Tiptap::make('Content')
   ->buttons(['textAlign'])
   ->alignments(['left', 'center', 'right', 'justify']) // Available alignments
   ->defaultAlignment('left') // Default text alignment
+```
+
+### Color options
+
+```php
+Tiptap::make('Content')
+  ->buttons(['color'])
+  ->colors(['#f1f1f1']) // Available colors in HEX
 ```
 
 ### RTL Support
