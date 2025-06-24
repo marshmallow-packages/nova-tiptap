@@ -316,7 +316,7 @@
             colors() {
                 return this.currentField.colors
                     ? this.currentField.colors
-                    : ['#000000', '#ff0000', '#0000ff', '#008000', '#ffff00', '#ffa500'];
+                    : ['#000000', '#ff133b', '#0000ff', '#008000', '#ffff00', '#ffa500'];
             },
 
             alignments() {
