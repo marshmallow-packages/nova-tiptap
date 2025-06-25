@@ -118,6 +118,16 @@
                                 <color-button
                                     :editor="editor"
                                     :colors="colors"
+                                    mode="color"
+                                >
+                                </color-button>
+                            </template>
+
+                            <template v-else-if="button == 'backgroundColor'">
+                                <color-button
+                                    :editor="editor"
+                                    :colors="backgroundColors"
+                                    mode="backgroundColor"
                                 >
                                 </color-button>
                             </template>
@@ -228,6 +238,7 @@
     import PlaceholderBlockExtension from "../extensions/PlaceholderBlockExtension.js";
     import VideoContentBlockExtension from "./content-blocks/VideoContentBlockExtension.js";
     import GalleryContentBlockExtension from "./content-blocks/GalleryContentBlockExtension.js";
+    import BackgroundColorExtension from "../extensions/BackgroundColor.js";
 
     export default {
         mixins: [
@@ -316,6 +327,12 @@
             colors() {
                 return this.currentField.colors
                     ? this.currentField.colors
+                    : ['#000000', '#ff133b', '#0000ff', '#008000', '#ffff00', '#ffa500'];
+            },
+
+            backgroundColors() {
+                return this.currentField.backgroundColors
+                    ? this.currentField.backgroundColors
                     : ['#000000', '#ff133b', '#0000ff', '#008000', '#ffff00', '#ffa500'];
             },
 
@@ -458,6 +475,7 @@
                 Strike,
                 TextStyle,
                 Color,
+                BackgroundColorExtension,
                 Underline,
                 Subscript,
                 Superscript,

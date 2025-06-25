@@ -3,10 +3,10 @@
         :should-close-on-blur="false"
         placement="top-center">
         <base-button
-            title="Color"
+            :title="mode === 'color' ? 'Color' : 'Background color'"
             style="top: -2px;"
             :clickMethod="buttonClickMethod">
-            <font-awesome-icon :icon="['fas', 'a']" />
+            <font-awesome-icon :icon="['fas', mode === 'color' ? 'a' : 'pen-fancy']" />
             <div class="color-indicator" :style="{ 'background-color': currentColor }"></div>
         </base-button>
 
@@ -49,7 +49,7 @@ import BaseButton from "./BaseButton.vue";
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 export default {
-    props: ['editor', 'colors'],
+    props: ['editor', 'colors', 'mode'],
     components: {BaseButton, FontAwesomeIcon},
     computed: {
         currentColor() {
@@ -59,11 +59,14 @@ export default {
 
             const attributes = this.editor.getAttributes('textStyle');
 
-            if (!Object.prototype.hasOwnProperty.call(attributes, 'color')) {
+            if (
+                (this.mode === 'color' && !Object.prototype.hasOwnProperty.call(attributes, 'color')) ||
+                (this.mode === 'backgroundColor' && !Object.prototype.hasOwnProperty.call(attributes, 'backgroundColor'))
+            ) {
                 return '#000';
             }
 
-            const {color} = attributes;
+            const color = (this.mode === 'color') ? attributes.color : attributes.backgroundColor;
 
             if (color && color.startsWith('rgb')) {
                 return this.rgbToHex(color);
@@ -90,9 +93,17 @@ export default {
         },
         setColor(color, shouldClose = false) {
             if (!color) {
-                this.editor.commands.unsetColor();
+                if (this.mode === 'color') {
+                    this.editor.commands.unsetColor();
+                } else {
+                    this.editor.commands.unsetBackgroundColor();
+                }
             } else {
-                this.editor.commands.setColor(color);
+                if (this.mode === 'color') {
+                    this.editor.commands.setColor(color);
+                } else {
+                    this.editor.commands.setBackgroundColor(color);
+                }
             }
 
             if (shouldClose) {

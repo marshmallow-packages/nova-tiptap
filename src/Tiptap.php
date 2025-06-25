@@ -79,6 +79,19 @@ class Tiptap extends Field
     }
 
     /**
+     * Set the colors that should be available when using background color selector.
+     *
+     * @param array $colors
+     * @return $this
+     */
+    public function backgroundColors($colors)
+    {
+        return $this->withMeta([
+            'backgroundColors' => $colors,
+        ]);
+    }
+
+    /**
      * Turn on syntax highlighting when using code_block.
      *
      * @param  mixed  $syntaxHighlighting
