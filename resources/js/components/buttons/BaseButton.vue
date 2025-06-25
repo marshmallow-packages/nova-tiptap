@@ -95,7 +95,8 @@ import {
     faUnlink,
     faA,
     faSwatchbook,
-    faDropletSlash
+    faDropletSlash,
+    faPenFancy
 } from '@fortawesome/free-solid-svg-icons';
 
 library.add(
@@ -129,7 +130,8 @@ library.add(
     faUnlink,
     faA,
     faSwatchbook,
-    faDropletSlash
+    faDropletSlash,
+    faPenFancy
 );
 
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';

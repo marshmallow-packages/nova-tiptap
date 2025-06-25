@@ -46,30 +46,31 @@ Tiptap::make('Content')
 
 ### Available Buttons
 
-| Button           | Description                                  |
-|------------------|----------------------------------------------|
-| `heading`        | Text headings (H1, H2, H3, etc.)             |
-| `color`          | Color text formatting                        |
-| `bold`           | Bold text formatting                         |
-| `italic`         | Italic text formatting                       |
-| `strike`         | Strikethrough text                           |
-| `underline`      | Underline text                               |
-| `bulletList`     | Unordered/bullet list                        |
-| `orderedList`    | Ordered/numbered list                        |
-| `link`           | Hyperlinks to URLs or files                  |
-| `code`           | Inline code formatting                       |
-| `codeBlock`      | Block code with optional syntax highlighting |
-| `blockquote`     | Block quotes                                 |
-| `image`          | Insert and upload images                     |
-| `table`          | Create and edit tables                       |
-| `textAlign`      | Text alignment options                       |
-| `rtl`            | Right-to-left text direction                 |
-| `horizontalRule` | Horizontal divider line                      |
-| `hardBreak`      | Hard line break                              |
-| `history`        | Undo/redo functionality                      |
-| `editHtml`       | HTML source code editor                      |
-| `\|`             | Vertical divider in toolbar (special)        |
-| `br`             | Line break in toolbar (special)              |
+| Button            | Description                                  |
+|-------------------|----------------------------------------------|
+| `heading`         | Text headings (H1, H2, H3, etc.)             |
+| `color`           | Color text formatting                        |
+| `backgroundColor` | Background color formatting                  |
+| `bold`            | Bold text formatting                         |
+| `italic`          | Italic text formatting                       |
+| `strike`          | Strikethrough text                           |
+| `underline`       | Underline text                               |
+| `bulletList`      | Unordered/bullet list                        |
+| `orderedList`     | Ordered/numbered list                        |
+| `link`            | Hyperlinks to URLs or files                  |
+| `code`            | Inline code formatting                       |
+| `codeBlock`       | Block code with optional syntax highlighting |
+| `blockquote`      | Block quotes                                 |
+| `image`           | Insert and upload images                     |
+| `table`           | Create and edit tables                       |
+| `textAlign`       | Text alignment options                       |
+| `rtl`             | Right-to-left text direction                 |
+| `horizontalRule`  | Horizontal divider line                      |
+| `hardBreak`       | Hard line break                              |
+| `history`         | Undo/redo functionality                      |
+| `editHtml`        | HTML source code editor                      |
+| `\|`              | Vertical divider in toolbar (special)        |
+| `br`              | Line break in toolbar (special)              |
 
 ## Feature Configuration
 
@@ -122,6 +123,14 @@ Tiptap::make('Content')
 Tiptap::make('Content')
   ->buttons(['color'])
   ->colors(['#f1f1f1']) // Available colors in HEX
+```
+
+### Background color options
+
+```php
+Tiptap::make('Content')
+  ->buttons(['color'])
+  ->backgroundColors(['#f1f1f1']) // Available background colors in HEX
 ```
 
 ### RTL Support
