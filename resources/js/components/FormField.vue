@@ -132,6 +132,14 @@
                                 </color-button>
                             </template>
 
+                            <template v-else-if="button == 'table'">
+                                <table-button
+                                    :editor="editor"
+                                    :table-cell-background-colors="tableCellBackgroundColors"
+                                    :table-cell-border-colors="tableCellBorderColors"
+                                ></table-button>
+                            </template>
+
                             <template v-else>
                                 <normal-button
                                     :editor="editor"
@@ -141,14 +149,6 @@
                                 </normal-button>
                             </template>
                         </div>
-                    </div>
-
-                    <div
-                        class="flex items-center rounded"
-                        style="z-index: 10"
-                        v-if="tableIsActive"
-                    >
-                        <table-buttons :editor="editor"> </table-buttons>
                     </div>
                 </div>
 
@@ -199,7 +199,7 @@
 
     import Table from "@tiptap/extension-table";
     import TableRow from "@tiptap/extension-table-row";
-    import TableCell from "@tiptap/extension-table-cell";
+    import TableCell from "../extensions/TableCell";
     import TableHeader from "@tiptap/extension-table-header";
 
     import Paragraph from "@tiptap/extension-paragraph";
@@ -212,7 +212,6 @@
     import LinkButton from "./buttons/LinkButton";
     import NormalButton from "./buttons/NormalButton";
     import HeadingButtons from "./buttons/HeadingButtons";
-    import TableButtons from "./buttons/TableButtons";
     import TextAlignButtons from "./buttons/TextAlignButtons";
     import RtlButton from "./buttons/RtlButton";
     import HistoryButtons from "./buttons/HistoryButtons";
@@ -221,6 +220,7 @@
     import ContentBlockButton from "./buttons/ContentBlockButton";
     import BaseButton from "./buttons/BaseButton.vue";
     import ColorButton from "./buttons/ColorButton.vue";
+    import TableButton from "./buttons/TableButton.vue";
 
     import CodeBlockComponent from "./CodeBlockComponent";
     import EditHtml from "./EditHtml";
@@ -251,12 +251,12 @@
         props: ["resourceName", "resourceId", "field"],
 
         components: {
+            TableButton,
             ColorButton,
             EditorContent,
             LinkButton,
             NormalButton,
             HeadingButtons,
-            TableButtons,
             TextAlignButtons,
             RtlButton,
             HistoryButtons,
@@ -336,6 +336,18 @@
                     : ['#000000', '#ff133b', '#0000ff', '#008000', '#ffff00', '#ffa500'];
             },
 
+            tableCellBackgroundColors() {
+                return this.currentField.tableCellBackgroundColors
+                    ? this.currentField.tableCellBackgroundColors
+                    : ['#000000', '#ff133b', '#0000ff', '#008000', '#ffff00', '#ffa500'];
+            },
+
+            tableCellBorderColors() {
+                return this.currentField.tableCellBorderColors
+                    ? this.currentField.tableCellBorderColors
+                    : ['#000000', '#ff133b', '#0000ff', '#008000', '#ffff00', '#ffa500'];
+            },
+
             alignments() {
                 return this.currentField.alignments
                     ? this.currentField.alignments
@@ -364,13 +376,6 @@
                 return this.currentField.htmlTheme
                     ? this.currentField.htmlTheme
                     : "";
-            },
-
-            tableIsActive() {
-                if (this.buttons.indexOf("table") > -1) {
-                    return this.editor ? this.editor.isActive("table") : false;
-                }
-                return false;
             },
 
             saveAsJson() {

@@ -129,8 +129,24 @@ Tiptap::make('Content')
 
 ```php
 Tiptap::make('Content')
-  ->buttons(['color'])
+  ->buttons(['backgroundColor'])
   ->backgroundColors(['#f1f1f1']) // Available background colors in HEX
+```
+
+### Table cell background color options
+
+```php
+Tiptap::make('Content')
+  ->buttons(['table'])
+  ->tableCellBackgroundColors(['#f1f1f1']) // Available table cell background colors in HEX
+```
+
+### Table cell border color options
+
+```php
+Tiptap::make('Content')
+  ->buttons(['table'])
+  ->tableCellBorderColors(['#f1f1f1']) // Available table cell border colors in HEX
 ```
 
 ### RTL Support
