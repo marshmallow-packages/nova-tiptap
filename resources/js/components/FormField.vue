@@ -182,12 +182,13 @@
 
 <script>
     import { Editor, EditorContent, VueNodeViewRenderer } from "@tiptap/vue-3";
+    import { StarterKit } from "@tiptap/starter-kit";
 
     import Text from "@tiptap/extension-text";
 
     import Blockquote from "@tiptap/extension-blockquote";
     import Bold from "@tiptap/extension-bold";
-    import BulletList from "@tiptap/extension-bullet-list";
+    import { BulletList, OrderedList, ListItem } from "@tiptap/extension-list";
     import Code from "@tiptap/extension-code";
     import CodeBlock from "@tiptap/extension-code-block";
     import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
@@ -195,31 +196,30 @@
     import HorizontalRule from "@tiptap/extension-horizontal-rule";
     import Italic from "@tiptap/extension-italic";
     import Link from "@tiptap/extension-link";
-    import ListItem from "@tiptap/extension-list-item";
-    import OrderedList from "@tiptap/extension-ordered-list";
     import Strike from "@tiptap/extension-strike";
     import Subscript from "@tiptap/extension-subscript";
     import Superscript from "@tiptap/extension-superscript";
-    import TextStyle from "@tiptap/extension-text-style";
+    import { TextStyle } from "@tiptap/extension-text-style";
     import Underline from "@tiptap/extension-underline";
     import { Color } from "@tiptap/extension-color";
 
     import Heading from "@tiptap/extension-heading";
     import TextAlign from "@tiptap/extension-text-align";
-    import History from "@tiptap/extension-history";
+    import {
+        UndoRedo,
+        Placeholder,
+        Dropcursor,
+        Gapcursor,
+    } from "@tiptap/extensions";
     import Document from "@tiptap/extension-document";
 
-    import Table from "@tiptap/extension-table";
-    import TableRow from "@tiptap/extension-table-row";
+    import { Table, TableRow, TableHeader } from "@tiptap/extension-table";
     import TableCell from "../extensions/TableCell";
-    import TableHeader from "@tiptap/extension-table-header";
 
     import Paragraph from "@tiptap/extension-paragraph";
     import HardBreak from "@tiptap/extension-hard-break";
-    import Placeholder from "@tiptap/extension-placeholder";
 
     import Image from "@tiptap/extension-image";
-    import Dropcursor from "@tiptap/extension-dropcursor";
 
     import LinkButton from "./buttons/LinkButton";
     import NormalButton from "./buttons/NormalButton";
@@ -237,8 +237,6 @@
 
     import CodeBlockComponent from "./CodeBlockComponent";
     import EditHtml from "./EditHtml";
-
-    import Gapcursor from "@tiptap/extension-gapcursor";
 
     import { lowlight } from "lowlight";
     import pretty from "pretty";
@@ -571,7 +569,7 @@
                     alignments: this.alignments,
                     defaultAlignment: this.defaultAlignment,
                 }),
-                History,
+                UndoRedo,
                 Text,
                 Gapcursor,
                 Placeholder.configure({
@@ -618,6 +616,19 @@
             } else if (this.buttons.includes("codeBlock")) {
                 extensions.push(CodeBlock);
             }
+
+            extensions.push(
+                StarterKit.configure({
+                    // History is now called undoRedo
+                    undoRedo: {
+                        depth: 100,
+                    },
+                    // Link is now included by default in StarterKit
+                    link: {
+                        openOnClick: false,
+                    },
+                })
+            );
 
             const context = this;
 

@@ -55,13 +55,11 @@
 
     import Text from "@tiptap/extension-text";
     import Bold from "@tiptap/extension-bold";
-    import BulletList from "@tiptap/extension-bullet-list";
+    import { BulletList, OrderedList, ListItem } from "@tiptap/extension-list";
     import Highlight from "@tiptap/extension-highlight";
     import HorizontalRule from "@tiptap/extension-horizontal-rule";
     import Italic from "@tiptap/extension-italic";
     import Link from "@tiptap/extension-link";
-    import ListItem from "@tiptap/extension-list-item";
-    import OrderedList from "@tiptap/extension-ordered-list";
     import Strike from "@tiptap/extension-strike";
     import Subscript from "@tiptap/extension-subscript";
     import Superscript from "@tiptap/extension-superscript";
@@ -73,14 +71,13 @@
     import Paragraph from "@tiptap/extension-paragraph";
     import HardBreak from "@tiptap/extension-hard-break";
 
-    import Dropcursor from "@tiptap/extension-dropcursor";
+    import { Dropcursor, Gapcursor } from "@tiptap/extensions";
 
     import LinkButton from "./buttons/LinkButton";
     import NormalButton from "./buttons/NormalButton";
     import HeadingButtons from "./buttons/HeadingButtons";
     import BaseButton from "./buttons/BaseButton.vue";
 
-    import Gapcursor from "@tiptap/extension-gapcursor";
     import contentSanitizer from "../mixins/contentSanitizer";
 
     export default {

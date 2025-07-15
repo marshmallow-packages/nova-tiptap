@@ -1,4 +1,4 @@
-import TableCell from '@tiptap/extension-table-cell';
+import { TableCell } from "@tiptap/extension-table";
 
 export default TableCell.extend({
     addAttributes() {
@@ -8,32 +8,32 @@ export default TableCell.extend({
                 default: null,
                 renderHTML: (attributes) => {
                     if (!attributes.backgroundColor) {
-                        return {}
+                        return {};
                     }
 
                     return {
                         style: `background-color: ${attributes.backgroundColor}`,
-                    }
+                    };
                 },
                 parseHTML: (element) => {
-                    return element.style.backgroundColor.replace(/['"]+/g, '')
+                    return element.style.backgroundColor.replace(/['"]+/g, "");
                 },
             },
             borderColor: {
                 default: null,
                 renderHTML: (attributes) => {
                     if (!attributes.borderColor) {
-                        return {}
+                        return {};
                     }
 
                     return {
                         style: `border-color: ${attributes.borderColor}`,
-                    }
+                    };
                 },
                 parseHTML: (element) => {
-                    return element.style.borderColor.replace(/['"]+/g, '')
+                    return element.style.borderColor.replace(/['"]+/g, "");
                 },
             },
-        }
+        };
     },
 });
