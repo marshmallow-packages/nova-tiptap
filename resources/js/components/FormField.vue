@@ -132,7 +132,7 @@
                                 </color-button>
                             </template>
 
-                            <template v-else-if="button == 'table'">
+                            <template v-else-if="button == 'tableAlternative'">
                                 <table-button
                                     :editor="editor"
                                     :table-cell-background-colors="tableCellBackgroundColors"
@@ -149,6 +149,15 @@
                                 </normal-button>
                             </template>
                         </div>
+                    </div>
+
+
+                    <div
+                        class="flex items-center rounded"
+                        style="z-index: 10"
+                        v-if="tableIsActive"
+                    >
+                        <table-buttons :editor="editor"> </table-buttons>
                     </div>
                 </div>
 
@@ -212,6 +221,7 @@
     import LinkButton from "./buttons/LinkButton";
     import NormalButton from "./buttons/NormalButton";
     import HeadingButtons from "./buttons/HeadingButtons";
+    import TableButtons from "./buttons/TableButtons";
     import TextAlignButtons from "./buttons/TextAlignButtons";
     import RtlButton from "./buttons/RtlButton";
     import HistoryButtons from "./buttons/HistoryButtons";
@@ -257,6 +267,7 @@
             LinkButton,
             NormalButton,
             HeadingButtons,
+            TableButtons,
             TextAlignButtons,
             RtlButton,
             HistoryButtons,
@@ -352,6 +363,13 @@
                 return this.currentField.alignments
                     ? this.currentField.alignments
                     : ["start", "center", "end", "justify"];
+            },
+
+            tableIsActive() {
+                if (this.buttons.indexOf("table") > -1) {
+                    return this.editor ? this.editor.isActive("table") : false;
+                }
+                return false;
             },
 
             alignElements() {
