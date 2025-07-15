@@ -67,6 +67,7 @@
         "axios": "^0.21.1",
         "codemirror-editor-vue3": "^2.0.6",
         "i": "^0.3.6",
+        "laravel-nova-ui": "^0.4.12",
         "lodash": "^4.17.21",
         "lowlight": "^2.6.1",
         "npm": "^7.17.0",
