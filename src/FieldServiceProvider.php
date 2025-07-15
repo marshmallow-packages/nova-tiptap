@@ -2,10 +2,10 @@
 
 namespace Marshmallow\Tiptap;
 
+use Laravel\Nova\Nova;
+use Laravel\Nova\Events\ServingNova;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
-use Laravel\Nova\Events\ServingNova;
-use Laravel\Nova\Nova;
 
 class FieldServiceProvider extends ServiceProvider
 {
@@ -21,6 +21,11 @@ class FieldServiceProvider extends ServiceProvider
         });
 
         $this->loadJsonTranslationsFrom(__DIR__ . '/../resources/lang');
+
+        // Publish configuration file
+        $this->publishes([
+            __DIR__ . '/../config/nova-tiptap.php' => config_path('nova-tiptap.php'),
+        ], 'nova-tiptap-config');
 
         Nova::serving(function (ServingNova $event) {
             Nova::provideToScript([
@@ -39,10 +44,6 @@ class FieldServiceProvider extends ServiceProvider
      */
     protected function routes()
     {
-        if ($this->app->routesAreCached()) {
-            return;
-        }
-
         Route::middleware(['nova'])
             ->prefix('nova-tiptap/api')
             ->group(__DIR__ . '/../routes/api.php');
@@ -55,6 +56,9 @@ class FieldServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        // Merge configuration
+        $this->mergeConfigFrom(__DIR__ . '/../config/nova-tiptap.php', 'nova-tiptap');
+
         $this->app->bind('tiptap-content-blocks', function () {
             return new TiptapContentBlocks();
         });
