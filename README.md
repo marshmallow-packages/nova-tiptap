@@ -198,6 +198,50 @@ Tiptap::make('Content')
   ->sanitizeEmptyContent() // Return empty string for empty editor content
 ```
 
+### Image Pruning
+
+When enabled, this feature automatically removes uploaded images from storage when they are deleted from the TipTap content. Only images with `tt-mode="file"` (uploaded files) will be pruned, not external URLs with `tt-mode="url"`.
+
+#### Enable Globally
+
+First, publish the configuration file:
+
+```bash
+php artisan vendor:publish --tag=nova-tiptap-config
+```
+
+Then enable image pruning in `config/nova-tiptap.php`:
+
+```php
+return [
+    'prune_images' => true,
+    // ... other config options
+];
+```
+
+#### Enable Per Field
+
+You can also enable image pruning for specific fields:
+
+```php
+Tiptap::make('Content')
+  ->buttons(['image'])
+  ->imageSettings([
+    'disk' => 'public',
+    'path' => 'uploads/images',
+  ])
+  ->pruneImages() // Enable image pruning for this field
+```
+
+#### How It Works
+
+The system tracks uploaded images by their `tt-mode="file"` attribute. When content is updated:
+
+1. It extracts all uploaded image URLs from the old content
+2. It extracts all uploaded image URLs from the new content
+3. Images that exist in the old content but not in the new content are deleted from storage
+4. External images with `tt-mode="url"` are never deleted
+
 ## Read-Only Mode
 
 The Tiptap field supports Nova's native readonly functionality. When in readonly mode, the editor will display the content without allowing edits:

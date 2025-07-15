@@ -2,9 +2,12 @@
 
 namespace Marshmallow\Tiptap;
 
-use Laravel\Nova\Fields\Expandable;
+use Illuminate\Support\Arr;
 use Laravel\Nova\Fields\Field;
+use Laravel\Nova\Fields\Expandable;
+use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\Fields\SupportsDependentFields;
+use Marshmallow\Tiptap\Services\ImagePruningService;
 
 class Tiptap extends Field
 {
@@ -282,6 +285,72 @@ class Tiptap extends Field
         return $this->withMeta([
             'sanitizeEmptyContent' => true,
         ]);
+    }
+
+    /**
+     * Enable automatic pruning of uploaded images when they are removed from content.
+     *
+     * @param  bool  $enabled
+     * @return $this
+     */
+    public function pruneImages($enabled = true)
+    {
+        return $this->withMeta([
+            'pruneImages' => $enabled,
+        ]);
+    }
+
+    /**
+     * Hydrate the given attribute on the model based on the incoming request.
+     *
+     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
+     * @param  string  $requestAttribute
+     * @param  object  $model
+     * @param  string  $attribute
+     * @return void
+     */
+    protected function fillAttributeFromRequest(NovaRequest $request, $requestAttribute, $model, $attribute)
+    {
+        // Get the old value before updating
+        $oldValue = $model->{$attribute} ?? null;
+
+        // Fill the attribute with the new value
+        parent::fillAttributeFromRequest($request, $requestAttribute, $model, $attribute);
+
+        // Get the new value after updating
+        $newValue = $model->{$attribute} ?? null;
+
+
+        // Prune images if enabled
+        $this->pruneImagesIfEnabled($oldValue, $newValue);
+    }
+
+    /**
+     * Prune images if the feature is enabled.
+     *
+     * @param  string|null  $oldContent
+     * @param  string|null  $newContent
+     * @return void
+     */
+    protected function pruneImagesIfEnabled($oldContent, $newContent)
+    {
+        // Check if pruning is enabled globally or for this field
+        $globallyEnabled = config('nova-tiptap.prune_images', false);
+        $fieldEnabled = Arr::get($this->meta, 'pruneImages');
+
+        if ($fieldEnabled === false) {
+            return;
+        }
+
+        if ($globallyEnabled === false && !$fieldEnabled) {
+            return;
+        }
+
+        // Get image settings for this field
+        $imageSettings = $this->meta['imageSettings'] ?? [];
+
+        // Perform the pruning
+        ImagePruningService::pruneImages($oldContent, $newContent, $imageSettings);
     }
 
     public function jsonSerialize(): array
