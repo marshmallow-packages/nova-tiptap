@@ -47,14 +47,16 @@
 <script>
 import BaseButton from "./BaseButton.vue";
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import colorUtils from '../../mixins/colorUtils';
 
 export default {
     props: ['editor', 'colors', 'mode'],
     components: {BaseButton, FontAwesomeIcon},
+    mixins: [colorUtils],
     computed: {
         currentColor() {
             if (!this.editor) {
-                return '#000';
+                return '#000000';
             }
 
             const attributes = this.editor.getAttributes('textStyle');
@@ -63,7 +65,7 @@ export default {
                 (this.mode === 'color' && !Object.prototype.hasOwnProperty.call(attributes, 'color')) ||
                 (this.mode === 'backgroundColor' && !Object.prototype.hasOwnProperty.call(attributes, 'backgroundColor'))
             ) {
-                return '#000';
+                return '#000000';
             }
 
             const color = (this.mode === 'color') ? attributes.color : attributes.backgroundColor;
@@ -77,15 +79,6 @@ export default {
     },
     methods: {
         buttonClickMethod() {},
-        rgbToHex(rgb) {
-            const rgbArray = rgb.match(/\d+/g);
-
-            const hexColor = rgbArray
-                .map((value) => parseInt(value).toString(16).padStart(2, '0'))
-                .join('');
-
-            return `#${hexColor}`;
-        },
         customColorClick() {
             this.$refs.colorInput.focus();
             this.$refs.colorInput.value = this.currentColor;

@@ -95,6 +95,32 @@ class Tiptap extends Field
     }
 
     /**
+     * Set the colors that should be available when using table cell background color selector.
+     *
+     * @param array $colors
+     * @return $this
+     */
+    public function tableCellBackgroundColors($colors)
+    {
+        return $this->withMeta([
+            'tableCellBackgroundColors' => $colors,
+        ]);
+    }
+
+    /**
+     * Set the colors that should be available when using table cell border color selector.
+     *
+     * @param array $colors
+     * @return $this
+     */
+    public function tableCellBorderColors($colors)
+    {
+        return $this->withMeta([
+            'tableCellBorderColors' => $colors,
+        ]);
+    }
+
+    /**
      * Turn on syntax highlighting when using code_block.
      *
      * @param  mixed  $syntaxHighlighting

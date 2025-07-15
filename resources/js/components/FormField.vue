@@ -132,6 +132,18 @@
                                 </color-button>
                             </template>
 
+                            <template v-else-if="button == 'tableAlternative'">
+                                <table-button
+                                    :editor="editor"
+                                    :table-cell-background-colors="
+                                        tableCellBackgroundColors
+                                    "
+                                    :table-cell-border-colors="
+                                        tableCellBorderColors
+                                    "
+                                ></table-button>
+                            </template>
+
                             <template v-else>
                                 <normal-button
                                     :editor="editor"
@@ -199,7 +211,7 @@
 
     import Table from "@tiptap/extension-table";
     import TableRow from "@tiptap/extension-table-row";
-    import TableCell from "@tiptap/extension-table-cell";
+    import TableCell from "../extensions/TableCell";
     import TableHeader from "@tiptap/extension-table-header";
 
     import Paragraph from "@tiptap/extension-paragraph";
@@ -221,6 +233,7 @@
     import ContentBlockButton from "./buttons/ContentBlockButton";
     import BaseButton from "./buttons/BaseButton.vue";
     import ColorButton from "./buttons/ColorButton.vue";
+    import TableButton from "./buttons/TableButton.vue";
 
     import CodeBlockComponent from "./CodeBlockComponent";
     import EditHtml from "./EditHtml";
@@ -251,6 +264,7 @@
         props: ["resourceName", "resourceId", "field"],
 
         components: {
+            TableButton,
             ColorButton,
             EditorContent,
             LinkButton,
@@ -278,6 +292,14 @@
                 fileDisk: "",
                 filePath: "",
                 initialFieldValue: null,
+                defaultColors: [
+                    "#000000",
+                    "#ff133b",
+                    "#0000ff",
+                    "#008000",
+                    "#ffff00",
+                    "#ffa500",
+                ],
             };
         },
 
@@ -327,19 +349,38 @@
             colors() {
                 return this.currentField.colors
                     ? this.currentField.colors
-                    : ['#000000', '#ff133b', '#0000ff', '#008000', '#ffff00', '#ffa500'];
+                    : this.defaultColors;
             },
 
             backgroundColors() {
                 return this.currentField.backgroundColors
                     ? this.currentField.backgroundColors
-                    : ['#000000', '#ff133b', '#0000ff', '#008000', '#ffff00', '#ffa500'];
+                    : this.defaultColors;
+            },
+
+            tableCellBackgroundColors() {
+                return this.currentField.tableCellBackgroundColors
+                    ? this.currentField.tableCellBackgroundColors
+                    : this.defaultColors;
+            },
+
+            tableCellBorderColors() {
+                return this.currentField.tableCellBorderColors
+                    ? this.currentField.tableCellBorderColors
+                    : this.defaultColors;
             },
 
             alignments() {
                 return this.currentField.alignments
                     ? this.currentField.alignments
                     : ["start", "center", "end", "justify"];
+            },
+
+            tableIsActive() {
+                if (this.buttons.indexOf("table") > -1) {
+                    return this.editor ? this.editor.isActive("table") : false;
+                }
+                return false;
             },
 
             alignElements() {
@@ -364,13 +405,6 @@
                 return this.currentField.htmlTheme
                     ? this.currentField.htmlTheme
                     : "";
-            },
-
-            tableIsActive() {
-                if (this.buttons.indexOf("table") > -1) {
-                    return this.editor ? this.editor.isActive("table") : false;
-                }
-                return false;
             },
 
             saveAsJson() {
