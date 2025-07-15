@@ -135,8 +135,12 @@
                             <template v-else-if="button == 'tableAlternative'">
                                 <table-button
                                     :editor="editor"
-                                    :table-cell-background-colors="tableCellBackgroundColors"
-                                    :table-cell-border-colors="tableCellBorderColors"
+                                    :table-cell-background-colors="
+                                        tableCellBackgroundColors
+                                    "
+                                    :table-cell-border-colors="
+                                        tableCellBorderColors
+                                    "
                                 ></table-button>
                             </template>
 
@@ -150,7 +154,6 @@
                             </template>
                         </div>
                     </div>
-
 
                     <div
                         class="flex items-center rounded"
@@ -289,6 +292,14 @@
                 fileDisk: "",
                 filePath: "",
                 initialFieldValue: null,
+                defaultColors: [
+                    "#000000",
+                    "#ff133b",
+                    "#0000ff",
+                    "#008000",
+                    "#ffff00",
+                    "#ffa500",
+                ],
             };
         },
 
@@ -338,25 +349,25 @@
             colors() {
                 return this.currentField.colors
                     ? this.currentField.colors
-                    : ['#000000', '#ff133b', '#0000ff', '#008000', '#ffff00', '#ffa500'];
+                    : this.defaultColors;
             },
 
             backgroundColors() {
                 return this.currentField.backgroundColors
                     ? this.currentField.backgroundColors
-                    : ['#000000', '#ff133b', '#0000ff', '#008000', '#ffff00', '#ffa500'];
+                    : this.defaultColors;
             },
 
             tableCellBackgroundColors() {
                 return this.currentField.tableCellBackgroundColors
                     ? this.currentField.tableCellBackgroundColors
-                    : ['#000000', '#ff133b', '#0000ff', '#008000', '#ffff00', '#ffa500'];
+                    : this.defaultColors;
             },
 
             tableCellBorderColors() {
                 return this.currentField.tableCellBorderColors
                     ? this.currentField.tableCellBorderColors
-                    : ['#000000', '#ff133b', '#0000ff', '#008000', '#ffff00', '#ffa500'];
+                    : this.defaultColors;
             },
 
             alignments() {
