@@ -220,6 +220,7 @@
 
     import Image from "@tiptap/extension-image";
     import Dropcursor from "@tiptap/extension-dropcursor";
+    import ImageResize from 'tiptap-extension-resize-image';
 
     import LinkButton from "./buttons/LinkButton";
     import NormalButton from "./buttons/NormalButton";
@@ -600,6 +601,7 @@
                     },
                 }),
                 Dropcursor,
+                ImageResize,
             ];
 
             if (
