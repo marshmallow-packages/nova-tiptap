@@ -76,6 +76,7 @@
         "vue-loader": "^17.0.0",
         "vue-template-compiler": "^2.6.14",
         "vue-trix": "^1.2.0",
-        "yarn": "^1.22.11"
+        "yarn": "^1.22.11",
+        "tiptap-extension-resize-image": "^1.2.2"
     }
 }
