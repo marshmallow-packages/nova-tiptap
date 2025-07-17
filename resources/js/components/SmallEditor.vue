@@ -83,6 +83,8 @@
     import Gapcursor from "@tiptap/extension-gapcursor";
     import contentSanitizer from "../mixins/contentSanitizer";
 
+    import ImageResize from 'tiptap-extension-resize-image';
+    
     export default {
         mixins: [contentSanitizer],
         props: ["value", "imageDisk", "imagePath", "fileDisk", "filePath"],
@@ -152,6 +154,7 @@
                 Text,
                 Gapcursor,
                 Dropcursor,
+                ImageResize,
             ];
 
             const context = this;
