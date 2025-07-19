@@ -47,7 +47,7 @@ Tiptap::make('Content')
 ### Available Buttons
 
 | Button             | Description                                                                                     |
-|--------------------|-------------------------------------------------------------------------------------------------|
+| ------------------ | ----------------------------------------------------------------------------------------------- |
 | `heading`          | Text headings (H1, H2, H3, etc.)                                                                |
 | `color`            | Color text formatting                                                                           |
 | `backgroundColor`  | Background color formatting                                                                     |
