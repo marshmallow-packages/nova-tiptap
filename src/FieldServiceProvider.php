@@ -44,7 +44,7 @@ class FieldServiceProvider extends ServiceProvider
      */
     protected function routes()
     {
-        Route::middleware(['nova'])
+        Route::middleware(['nova', 'nova.auth'])
             ->prefix('nova-tiptap/api')
             ->group(__DIR__ . '/../routes/api.php');
     }
