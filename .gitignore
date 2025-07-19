@@ -10,3 +10,4 @@ phpunit.xml
 .DS_Store
 Thumbs.db
 *.log
+.npmrc
