@@ -73,6 +73,7 @@
         "npm": "^7.17.0",
         "portal-vue": "^3.0",
         "pretty": "^2.0.0",
+        "tiptap-extension-resize-image": "^1.2.3",
         "vue": "^3.2.33",
         "vue-loader": "^17.0.0",
         "vue-template-compiler": "^2.6.14",

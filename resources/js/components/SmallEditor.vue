@@ -81,6 +81,7 @@
     import BaseButton from "./buttons/BaseButton.vue";
 
     import Gapcursor from "@tiptap/extension-gapcursor";
+    import ImageResize from "tiptap-extension-resize-image";
     import contentSanitizer from "../mixins/contentSanitizer";
 
     export default {
@@ -151,6 +152,7 @@
                 Paragraph,
                 Text,
                 Gapcursor,
+                ImageResize,
                 Dropcursor,
             ];
 
