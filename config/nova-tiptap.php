@@ -91,7 +91,7 @@ return [
          | Allowed storage disks for uploads
          | For security, only allow specific disks
          */
-        'allowed_disks' => ['public', 'local'],
+        'allowed_disks' => ['public', 'local', 'linode'],
 
         /*
          | Enable strict MIME type checking
