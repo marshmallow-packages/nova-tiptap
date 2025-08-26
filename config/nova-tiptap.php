@@ -91,7 +91,7 @@ return [
          | Allowed storage disks for uploads
          | For security, only allow specific disks
          */
-        'allowed_disks' => ['public', 'local', 'linode'],
+        'allowed_disks' => explode(',', env('NOVA_TIP_TAP_ALLOWED_DISKS', 'public,local')),
 
         /*
          | Enable strict MIME type checking
