@@ -48,7 +48,7 @@ export default {
             } else if (this.button == 'orderedList') {
                 return ['fas', 'list-ol'];
             } else if (this.button == 'horizontalRule') {
-                return ['fas', 'horizontal-rule'];
+                return ['fas', 'minus'];
             } else if (this.button == 'table') {
                 return ['fas', 'table'];
             } else if (this.button == 'subscript') {
@@ -57,6 +57,8 @@ export default {
                 return ['fas', 'superscript'];
             } else if (this.button == 'paragraph') {
                 return ['fas', 'paragraph'];
+            } else if (this.button == 'clearFormat') {
+                return ['fas', 'eraser'];
             }
 
             return null;
@@ -110,6 +112,8 @@ export default {
               command.setHardBreak();
             } else if (this.button == 'paragraph') {
               command.setParagraph();
+            } else if (this.button == 'clearFormat') {
+              command.unsetAllMarks().clearNodes();
             }
 
             command.run();

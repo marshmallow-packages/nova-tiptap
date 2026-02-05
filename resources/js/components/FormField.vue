@@ -253,6 +253,7 @@
     import VideoContentBlockExtension from "./content-blocks/VideoContentBlockExtension.js";
     import GalleryContentBlockExtension from "./content-blocks/GalleryContentBlockExtension.js";
     import BackgroundColorExtension from "../extensions/BackgroundColor.js";
+    import Iframe from "../extensions/Iframe.js";
 
     export default {
         mixins: [
@@ -602,6 +603,7 @@
                 }),
                 Dropcursor,
                 ImageResize,
+                Iframe,
             ];
 
             if (
