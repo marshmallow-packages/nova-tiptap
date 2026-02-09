@@ -16,10 +16,6 @@ class FieldServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->app->booted(function () {
-            $this->routes();
-        });
-
         $this->loadJsonTranslationsFrom(__DIR__ . '/../resources/lang');
 
         // Publish configuration file
@@ -28,6 +24,10 @@ class FieldServiceProvider extends ServiceProvider
         ], 'nova-tiptap-config');
 
         Nova::serving(function (ServingNova $event) {
+            // Register routes inside Nova::serving to ensure Nova's middleware
+            // aliases (nova, nova.auth) are registered before we use them
+            $this->routes();
+
             Nova::provideToScript([
                 'tiptapTranslations' => $this->translations(),
             ]);
