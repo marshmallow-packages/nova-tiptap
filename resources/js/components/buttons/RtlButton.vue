@@ -5,7 +5,7 @@
             :isDisabled="mode != 'editor'"
             :clickMethod="setRtl"
             :title="'RTL'"
-            :icon="['fas', 'paragraph-rtl']"
+            :icon="'rtl'"
         >
         </base-button>
     </span>

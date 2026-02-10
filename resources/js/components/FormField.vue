@@ -9,10 +9,10 @@
             <div style="position: relative; top: 0; left: 0">
                 <div
                     v-show="!currentField.readonly"
-                    class="w-full bg-gray-100 rounded overflow-break dark:bg-gray-700"
+                    class="tiptap-toolbar"
                     style="z-index: 10; position: sticky; top: 0; left: 0"
                 >
-                    <div class="p-1">
+                    <div class="tiptap-toolbar__inner">
                         <div
                             v-for="button in buttons"
                             :key="'button-' + button"
@@ -21,20 +21,26 @@
                             }"
                         >
                             <template v-if="button == '|'">
-                                <button
-                                    class="w-[1px] h-6 relative top-2 mx-1 bg-gray-400"
-                                ></button>
+                                <div class="tiptap-separator"></div>
                             </template>
 
                             <template v-else-if="button == 'br'"> </template>
 
-                            <template v-else-if="button == 'heading'">
-                                <heading-buttons
+                            <template v-else-if="button == 'heading' || button == 'headingDropdown'">
+                                <heading-dropdown
                                     :headingLevels="headingLevels"
                                     :mode="mode"
                                     :editor="editor"
                                 >
-                                </heading-buttons>
+                                </heading-dropdown>
+                            </template>
+
+                            <template v-else-if="button == 'listDropdown'">
+                                <list-dropdown
+                                    :mode="mode"
+                                    :editor="editor"
+                                >
+                                </list-dropdown>
                             </template>
 
                             <template v-else-if="button == 'link'">
@@ -92,6 +98,17 @@
                                     :defaultAlignment="defaultAlignment"
                                 >
                                 </text-align-buttons>
+                            </template>
+
+                            <template v-else-if="button == 'alignDropdown'">
+                                <align-dropdown
+                                    :editor="editor"
+                                    :mode="mode"
+                                    :alignments="alignments"
+                                    :alignElements="alignElements"
+                                    :defaultAlignment="defaultAlignment"
+                                >
+                                </align-dropdown>
                             </template>
 
                             <template v-else-if="button == 'rtl'">
@@ -165,11 +182,211 @@
                 </div>
 
                 <div
-                    class="w-full pt-2 pb-2 mt-3 nova-tiptap-editor form-input form-input-bordered"
+                    class="w-full nova-tiptap-editor tiptap-editor-content"
                     :style="cssProps"
                     v-show="mode == 'editor'"
                 >
                     <editor-content :editor="editor" />
+
+                    <bubble-menu
+                        v-if="editor && showBubbleMenu"
+                        :editor="editor"
+                        :tippy-options="{ duration: 100 }"
+                        class="tiptap-bubble-menu"
+                    >
+                        <template v-for="button in bubbleMenuButtons" :key="'bubble-' + button">
+                            <!-- Bold -->
+                            <button
+                                v-if="button === 'bold'"
+                                type="button"
+                                @click="editor.chain().focus().toggleBold().run()"
+                                :class="{ 'is-active': editor.isActive('bold') }"
+                                :title="__('bold')"
+                            >
+                                <tiptap-icon name="bold" />
+                            </button>
+
+                            <!-- Italic -->
+                            <button
+                                v-if="button === 'italic'"
+                                type="button"
+                                @click="editor.chain().focus().toggleItalic().run()"
+                                :class="{ 'is-active': editor.isActive('italic') }"
+                                :title="__('italic')"
+                            >
+                                <tiptap-icon name="italic" />
+                            </button>
+
+                            <!-- Strike -->
+                            <button
+                                v-if="button === 'strike'"
+                                type="button"
+                                @click="editor.chain().focus().toggleStrike().run()"
+                                :class="{ 'is-active': editor.isActive('strike') }"
+                                :title="__('strikethrough')"
+                            >
+                                <tiptap-icon name="strike" />
+                            </button>
+
+                            <!-- Underline -->
+                            <button
+                                v-if="button === 'underline'"
+                                type="button"
+                                @click="editor.chain().focus().toggleUnderline().run()"
+                                :class="{ 'is-active': editor.isActive('underline') }"
+                                :title="__('underline')"
+                            >
+                                <tiptap-icon name="underline" />
+                            </button>
+
+                            <!-- Code -->
+                            <button
+                                v-if="button === 'code'"
+                                type="button"
+                                @click="editor.chain().focus().toggleCode().run()"
+                                :class="{ 'is-active': editor.isActive('code') }"
+                                :title="__('code')"
+                            >
+                                <tiptap-icon name="code" />
+                            </button>
+
+                            <!-- Highlight -->
+                            <button
+                                v-if="button === 'highlight'"
+                                type="button"
+                                @click="editor.chain().focus().toggleHighlight().run()"
+                                :class="{ 'is-active': editor.isActive('highlight') }"
+                                :title="__('highlight')"
+                            >
+                                <tiptap-icon name="highlight" />
+                            </button>
+
+                            <!-- Subscript -->
+                            <button
+                                v-if="button === 'subscript'"
+                                type="button"
+                                @click="editor.chain().focus().toggleSubscript().run()"
+                                :class="{ 'is-active': editor.isActive('subscript') }"
+                                :title="__('subscript')"
+                            >
+                                <tiptap-icon name="subscript" />
+                            </button>
+
+                            <!-- Superscript -->
+                            <button
+                                v-if="button === 'superscript'"
+                                type="button"
+                                @click="editor.chain().focus().toggleSuperscript().run()"
+                                :class="{ 'is-active': editor.isActive('superscript') }"
+                                :title="__('superscript')"
+                            >
+                                <tiptap-icon name="superscript" />
+                            </button>
+
+                            <!-- Link -->
+                            <div v-if="button === 'link'" class="tiptap-bubble-menu__dropdown">
+                                <button
+                                    type="button"
+                                    @click="toggleBubbleLink"
+                                    :class="{ 'is-active': editor.isActive('link') }"
+                                    :title="__('link')"
+                                >
+                                    <tiptap-icon name="link" />
+                                </button>
+                                <div v-show="bubbleLinkOpen" class="tiptap-bubble-menu__dropdown-panel">
+                                    <input
+                                        v-model="bubbleLinkUrl"
+                                        type="text"
+                                        class="tiptap-bubble-menu__input"
+                                        :placeholder="__('Paste a link...')"
+                                        @keydown.enter.prevent="applyBubbleLink"
+                                    />
+                                    <button type="button" class="tiptap-bubble-menu__dropdown-btn" @click="applyBubbleLink" :disabled="!bubbleLinkUrl">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+                                            <polyline points="20 6 9 17 4 12"></polyline>
+                                        </svg>
+                                    </button>
+                                    <button v-if="editor.isActive('link')" type="button" class="tiptap-bubble-menu__dropdown-btn tiptap-bubble-menu__dropdown-btn--danger" @click="removeBubbleLink">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+                                            <polyline points="3 6 5 6 21 6"></polyline>
+                                            <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Text Color -->
+                            <div v-if="button === 'color'" class="tiptap-bubble-menu__dropdown">
+                                <button
+                                    type="button"
+                                    @click="toggleBubbleColor"
+                                    :class="{ 'is-active': editor.isActive('textStyle', { color: /./ }) }"
+                                    :title="__('text color')"
+                                >
+                                    <tiptap-icon name="color" />
+                                </button>
+                                <div v-show="bubbleColorOpen" class="tiptap-bubble-menu__color-panel">
+                                    <button
+                                        v-for="color in colors"
+                                        :key="'bubble-color-' + color"
+                                        type="button"
+                                        class="tiptap-bubble-menu__color-swatch"
+                                        :style="{ backgroundColor: color }"
+                                        @click="setBubbleColor(color)"
+                                        :title="color"
+                                    ></button>
+                                    <button
+                                        type="button"
+                                        class="tiptap-bubble-menu__color-reset"
+                                        @click="unsetBubbleColor"
+                                        :title="__('remove color')"
+                                    >
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+                                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Background Color -->
+                            <div v-if="button === 'backgroundColor'" class="tiptap-bubble-menu__dropdown">
+                                <button
+                                    type="button"
+                                    @click="toggleBubbleBgColor"
+                                    :class="{ 'is-active': editor.isActive('backgroundColor', { backgroundColor: /./ }) }"
+                                    :title="__('background color')"
+                                >
+                                    <tiptap-icon name="backgroundColor" />
+                                </button>
+                                <div v-show="bubbleBgColorOpen" class="tiptap-bubble-menu__color-panel">
+                                    <button
+                                        v-for="color in backgroundColors"
+                                        :key="'bubble-bgcolor-' + color"
+                                        type="button"
+                                        class="tiptap-bubble-menu__color-swatch"
+                                        :style="{ backgroundColor: color }"
+                                        @click="setBubbleBgColor(color)"
+                                        :title="color"
+                                    ></button>
+                                    <button
+                                        type="button"
+                                        class="tiptap-bubble-menu__color-reset"
+                                        @click="unsetBubbleBgColor"
+                                        :title="__('remove color')"
+                                    >
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+                                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Separator -->
+                            <div v-if="button === '|'" class="tiptap-bubble-menu__separator"></div>
+                        </template>
+                    </bubble-menu>
                 </div>
 
                 <div class="w-full px-0 mt-3" v-show="mode == 'html'">
@@ -182,12 +399,12 @@
 
 <script>
     import { Editor, EditorContent, VueNodeViewRenderer } from "@tiptap/vue-3";
+    import { BubbleMenu } from "@tiptap/vue-3/menus";
 
     import Text from "@tiptap/extension-text";
 
     import Blockquote from "@tiptap/extension-blockquote";
     import Bold from "@tiptap/extension-bold";
-    import BulletList from "@tiptap/extension-bullet-list";
     import Code from "@tiptap/extension-code";
     import CodeBlock from "@tiptap/extension-code-block";
     import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
@@ -195,36 +412,37 @@
     import HorizontalRule from "@tiptap/extension-horizontal-rule";
     import Italic from "@tiptap/extension-italic";
     import Link from "@tiptap/extension-link";
-    import ListItem from "@tiptap/extension-list-item";
-    import OrderedList from "@tiptap/extension-ordered-list";
     import Strike from "@tiptap/extension-strike";
     import Subscript from "@tiptap/extension-subscript";
     import Superscript from "@tiptap/extension-superscript";
-    import TextStyle from "@tiptap/extension-text-style";
+    import { TextStyle } from "@tiptap/extension-text-style";
     import Underline from "@tiptap/extension-underline";
     import { Color } from "@tiptap/extension-color";
 
     import Heading from "@tiptap/extension-heading";
     import TextAlign from "@tiptap/extension-text-align";
-    import History from "@tiptap/extension-history";
     import Document from "@tiptap/extension-document";
 
-    import Table from "@tiptap/extension-table";
-    import TableRow from "@tiptap/extension-table-row";
+    // TipTap v3 consolidated imports
+    import { BulletList, OrderedList, ListItem } from "@tiptap/extension-list";
+    import { Table, TableRow, TableHeader } from "@tiptap/extension-table";
+    import { UndoRedo, Placeholder, Dropcursor, Gapcursor } from "@tiptap/extensions";
+    import { FileHandler } from "@tiptap/extension-file-handler";
+
+    // Custom TableCell extension
     import TableCell from "../extensions/TableCell";
-    import TableHeader from "@tiptap/extension-table-header";
 
     import Paragraph from "@tiptap/extension-paragraph";
     import HardBreak from "@tiptap/extension-hard-break";
-    import Placeholder from "@tiptap/extension-placeholder";
 
-    import Image from "@tiptap/extension-image";
-    import Dropcursor from "@tiptap/extension-dropcursor";
     import ImageResize from "tiptap-extension-resize-image";
+    import ImageUploadNode from "../extensions/ImageUploadNode";
 
     import LinkButton from "./buttons/LinkButton";
     import NormalButton from "./buttons/NormalButton";
-    import HeadingButtons from "./buttons/HeadingButtons";
+    import HeadingDropdown from "./buttons/HeadingDropdown.vue";
+    import ListDropdown from "./buttons/ListDropdown.vue";
+    import AlignDropdown from "./buttons/AlignDropdown.vue";
     import TableButtons from "./buttons/TableButtons";
     import TextAlignButtons from "./buttons/TextAlignButtons";
     import RtlButton from "./buttons/RtlButton";
@@ -233,16 +451,17 @@
     import PlaceholderBlockButton from "./buttons/PlaceholderBlockButton";
     import ContentBlockButton from "./buttons/ContentBlockButton";
     import BaseButton from "./buttons/BaseButton.vue";
+    import { TiptapIcon } from "./icons";
     import ColorButton from "./buttons/ColorButton.vue";
     import TableButton from "./buttons/TableButton.vue";
 
     import CodeBlockComponent from "./CodeBlockComponent";
     import EditHtml from "./EditHtml";
 
-    import Gapcursor from "@tiptap/extension-gapcursor";
-
-    import { lowlight } from "lowlight";
+    import { common, createLowlight } from "lowlight";
     import pretty from "pretty";
+
+    const lowlight = createLowlight(common);
 
     import buttonHovers from "../mixins/buttonHovers";
     import contentSanitizer from "../mixins/contentSanitizer";
@@ -268,9 +487,12 @@
             TableButton,
             ColorButton,
             EditorContent,
+            BubbleMenu,
             LinkButton,
             NormalButton,
-            HeadingButtons,
+            HeadingDropdown,
+            ListDropdown,
+            AlignDropdown,
             TableButtons,
             TextAlignButtons,
             RtlButton,
@@ -280,6 +502,7 @@
             ContentBlockButton,
             EditHtml,
             BaseButton,
+            TiptapIcon,
         },
 
         data() {
@@ -301,6 +524,11 @@
                     "#ffff00",
                     "#ffa500",
                 ],
+                // Bubble menu state
+                bubbleLinkOpen: false,
+                bubbleLinkUrl: "",
+                bubbleColorOpen: false,
+                bubbleBgColorOpen: false,
             };
         },
 
@@ -408,6 +636,16 @@
                     : "";
             },
 
+            showBubbleMenu() {
+                return this.currentField.bubbleMenu !== false && this.bubbleMenuButtons.length > 0;
+            },
+
+            bubbleMenuButtons() {
+                return this.currentField.bubbleMenuButtons
+                    ? this.currentField.bubbleMenuButtons
+                    : ['bold', 'italic', 'strike'];
+            },
+
             saveAsJson() {
                 return this.currentField.saveAsJson
                     ? this.currentField.saveAsJson
@@ -439,6 +677,89 @@
                 }
                 if (!this.initialFieldValue) {
                     this.htmlModeValue = this.value;
+                }
+            },
+
+            // Bubble menu methods
+            toggleBubbleLink() {
+                if (this.bubbleLinkOpen) {
+                    this.bubbleLinkOpen = false;
+                } else {
+                    this.bubbleColorOpen = false;
+                    this.bubbleBgColorOpen = false;
+                    if (this.editor.isActive('link')) {
+                        this.bubbleLinkUrl = this.editor.getAttributes('link').href || '';
+                    } else {
+                        this.bubbleLinkUrl = '';
+                    }
+                    this.bubbleLinkOpen = true;
+                }
+            },
+
+            applyBubbleLink() {
+                if (this.bubbleLinkUrl) {
+                    this.editor.chain().focus().setLink({ href: this.bubbleLinkUrl }).run();
+                }
+                this.bubbleLinkOpen = false;
+            },
+
+            removeBubbleLink() {
+                this.editor.chain().focus().unsetLink().run();
+                this.bubbleLinkOpen = false;
+            },
+
+            toggleBubbleColor() {
+                this.bubbleLinkOpen = false;
+                this.bubbleBgColorOpen = false;
+                this.bubbleColorOpen = !this.bubbleColorOpen;
+            },
+
+            toggleBubbleBgColor() {
+                this.bubbleLinkOpen = false;
+                this.bubbleColorOpen = false;
+                this.bubbleBgColorOpen = !this.bubbleBgColorOpen;
+            },
+
+            setBubbleColor(color) {
+                this.editor.chain().focus().setColor(color).run();
+                this.bubbleColorOpen = false;
+            },
+
+            unsetBubbleColor() {
+                this.editor.chain().focus().unsetColor().run();
+                this.bubbleColorOpen = false;
+            },
+
+            setBubbleBgColor(color) {
+                this.editor.chain().focus().setBackgroundColor(color).run();
+                this.bubbleBgColorOpen = false;
+            },
+
+            unsetBubbleBgColor() {
+                this.editor.chain().focus().unsetBackgroundColor().run();
+                this.bubbleBgColorOpen = false;
+            },
+
+            closeBubbleMenuDropdowns() {
+                this.bubbleLinkOpen = false;
+                this.bubbleColorOpen = false;
+                this.bubbleBgColorOpen = false;
+            },
+
+            async uploadImage(file) {
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('disk', this.imageDisk);
+                formData.append('path', this.imagePath);
+
+                try {
+                    const response = await axios.post('/nova-tiptap/api/image', formData, {
+                        headers: { 'Content-Type': 'multipart/form-data' }
+                    });
+                    return response.data.url;
+                } catch (error) {
+                    console.error('Image upload failed:', error);
+                    return null;
                 }
             },
         },
@@ -572,13 +893,13 @@
                     alignments: this.alignments,
                     defaultAlignment: this.defaultAlignment,
                 }),
-                History,
+                UndoRedo,
                 Text,
                 Gapcursor,
                 Placeholder.configure({
                     placeholder: this.placeholder,
                 }),
-                Image.extend({
+                ImageResize.extend({
                     addAttributes() {
                         return {
                             ...this.parent?.(),
@@ -594,14 +915,42 @@
                             "tt-link-mode": {
                                 default: "url",
                             },
-                            class: String,
-                            title: String,
-                            alt: String,
+                            class: {
+                                default: null,
+                            },
+                            title: {
+                                default: null,
+                            },
+                            alt: {
+                                default: null,
+                            },
                         };
                     },
                 }),
                 Dropcursor,
-                ImageResize,
+                FileHandler.configure({
+                    allowedMimeTypes: ['image/png', 'image/jpeg', 'image/gif', 'image/webp', 'image/svg+xml'],
+                    onDrop: (currentEditor, files, pos) => {
+                        files.forEach(async (file) => {
+                            const url = await this.uploadImage(file);
+                            if (url) {
+                                currentEditor.chain().focus().setImageAt({ src: url }, pos).run();
+                            }
+                        });
+                    },
+                    onPaste: (currentEditor, files) => {
+                        files.forEach(async (file) => {
+                            const url = await this.uploadImage(file);
+                            if (url) {
+                                currentEditor.chain().focus().setImage({ src: url }).run();
+                            }
+                        });
+                    },
+                }),
+                ImageUploadNode.configure({
+                    disk: this.imageDisk,
+                    path: this.imagePath,
+                }),
             ];
 
             if (

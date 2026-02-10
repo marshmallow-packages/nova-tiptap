@@ -6,7 +6,7 @@
         "
         contenteditable="false"
     >
-        <div 
+        <div
             class="flex justify-center"
         >
             <div
@@ -33,8 +33,7 @@
                 draggable="true"
                 data-drag-handle
             >
-                <font-awesome-icon :icon="['fas', 'grip-horizontal']">
-                </font-awesome-icon>
+                <tiptap-icon name="grip" />
             </div>
 
             <div class="w-full">
@@ -45,13 +44,12 @@
                 class="pl-4 text-white text-lg cursor-pointer"
                 @click="deleteBlock"
             >
-                <font-awesome-icon :icon="['fas', 'trash-alt']">
-                </font-awesome-icon>
+                <tiptap-icon name="trash" />
             </div>
 
         </div>
 
-        <div 
+        <div
             class="flex justify-center hidden"
         >
             <div
@@ -60,7 +58,7 @@
                    text-xs
                    pt-1
                 "
-                
+
             >
 
             </div>
@@ -71,30 +69,17 @@
 
 <script>
 import { NodeViewWrapper } from '@tiptap/vue-3'
-
-import { library } from '@fortawesome/fontawesome-svg-core';
-
-import { 
-    faGripHorizontal,
-    faTrashAlt,
-} from '@fortawesome/free-solid-svg-icons';
-
-library.add(
-    faGripHorizontal,
-    faTrashAlt,
-);
-
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { TiptapIcon } from '../icons'
 
 export default {
-    props: { 
+    props: {
         label: String,
         nodeKey: String|Number,
     },
 
     components: {
         NodeViewWrapper,
-        FontAwesomeIcon
+        TiptapIcon
     },
 
     methods: {

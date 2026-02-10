@@ -65,7 +65,7 @@
             <base-button
                 :isDisabled="mode != 'editor'"
                 :clickMethod="showMenu"
-                :icon="['far', 'cube']"
+                icon="placeholder-block"
                 :title="__('add placeholder')"
             >
                 

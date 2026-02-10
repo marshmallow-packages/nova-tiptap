@@ -1,56 +1,41 @@
-import { Node } from 'tiptap'
+import { Node, mergeAttributes } from '@tiptap/core'
+import { VueNodeViewRenderer } from '@tiptap/vue-3'
+import IframeComponent from '../components/IframeComponent.vue'
 
-export default class Iframe extends Node {
+export default Node.create({
+    name: 'iframe',
 
-    get name() {
-        return 'iframe'
-    }
+    group: 'block',
 
-    get schema() {
+    atom: true,
+
+    addAttributes() {
         return {
-            attrs: {
-                src: {
-                    default: null,
-                },
+            src: {
+                default: null,
             },
-            group: 'block',
-            selectable: false,
-            parseDOM: [{
+            frameborder: {
+                default: 0,
+            },
+            allowfullscreen: {
+                default: 'true',
+            },
+        }
+    },
+
+    parseHTML() {
+        return [
+            {
                 tag: 'iframe',
-                getAttrs: dom => ({
-                    src: dom.getAttribute('src'),
-                }),
-            }],
-            toDOM: node => ['iframe', {
-                src: node.attrs.src,
-                frameborder: 0,
-                allowfullscreen: 'true',
-            }],
-        }
-    }
-
-    get view() {
-        return {
-            props: ['node', 'updateAttrs', 'view'],
-            computed: {
-                src: {
-                    get() {
-                        return this.node.attrs.src
-                    },
-                    set(src) {
-                        this.updateAttrs({
-                            src,
-                        })
-                    },
-                },
             },
-            template: `
-        <div class="iframe">
-          <iframe class="iframe__embed" :src="src"></iframe>
-          <input class="iframe__input" @paste.stop type="text" v-model="src" v-if="view.editable" />
-        </div>
-      `,
-        }
-    }
+        ]
+    },
 
-}
+    renderHTML({ HTMLAttributes }) {
+        return ['iframe', mergeAttributes(HTMLAttributes)]
+    },
+
+    addNodeView() {
+        return VueNodeViewRenderer(IframeComponent)
+    },
+})

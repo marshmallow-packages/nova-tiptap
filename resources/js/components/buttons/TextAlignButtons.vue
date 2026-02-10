@@ -8,7 +8,7 @@
             :clickMethod="setAlignment"
             :clickMethodParameters="alignment"
             :title="__('align '+alignment)"
-            :icon="['fas', 'align-'+iconName(alignment)]"
+            :icon="'align-'+iconName(alignment)"
         >
         </base-button>
     </span>

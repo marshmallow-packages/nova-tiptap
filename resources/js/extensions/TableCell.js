@@ -1,4 +1,4 @@
-import TableCell from '@tiptap/extension-table-cell';
+import { TableCell } from '@tiptap/extension-table';
 
 export default TableCell.extend({
     addAttributes() {

@@ -1,272 +1,205 @@
 <template>
     <span>
-        <Modal
-            :show="linkMenuIsActive"
-            tabindex="-1"
-        >
-            <div class="bg-white dark:bg-gray-800 rounded-lg overflow-hidden">
-                <template v-if="withFileUpload">
-                    <div class="px-6 pt-4">
-                        <span
-                            class="inline-block uppercase cursor-pointer font-bold text-sm border-b mr-4"
-                            :class="{
-                                'text-primary-500 border-primary-500': linkMode == 'url',
-                                'text-gray-500 border-transparent': linkMode != 'url',
-                            }"
-                            @click="linkMode = 'url'"
-                            v-text="ttt('url')"
-                        >
-                        </span>
+        <!-- Advanced Modal -->
+        <Modal :show="showAdvancedModal" tabindex="-1">
+            <div class="tiptap-modal">
+                <div v-if="withFileUpload" class="tiptap-modal__header">
+                    <button
+                        type="button"
+                        class="tiptap-modal__tab"
+                        :class="{ 'tiptap-modal__tab--active': linkMode == 'url' }"
+                        @click="linkMode = 'url'"
+                    >
+                        {{ ttt('url') }}
+                    </button>
+                    <button
+                        type="button"
+                        class="tiptap-modal__tab"
+                        :class="{ 'tiptap-modal__tab--active': linkMode == 'file' }"
+                        @click="linkMode = 'file'"
+                    >
+                        {{ ttt('file upload') }}
+                    </button>
+                </div>
 
-                        <span
-                            class="inline-block uppercase cursor-pointer font-bold text-sm border-b"
-                            :class="{
-                                'text-primary-500 border-primary-500': linkMode == 'file',
-                                'text-gray-500 border-transparent': linkMode != 'file',
-                            }"
-                            @click="linkMode = 'file'"
-                            v-text="ttt('file upload')"
-                        >
-                        </span>
-                    </div>
-                </template>
-
-                <div
-                    class="px-6"
-                    style="padding-bottom: 32px; padding-top: 32px"
-                >
+                <div class="tiptap-modal__body">
+                    <!-- URL Mode -->
                     <div v-show="linkMode == 'url'">
-                        <div class="flex flex-col">
-                            <label
-                                class="text-sm mb-1 ml-1"
-                                v-text="ttt('url')"
-                            >
-                            </label>
-
+                        <div class="tiptap-modal__section">
+                            <label class="tiptap-modal__label">{{ ttt('url') }}</label>
                             <input
-                                class="w-full form-control form-input form-control-bordered"
-                                type="text"
                                 v-model="url"
+                                type="text"
+                                class="tiptap-modal__input"
                                 placeholder="https://"
                             />
+                        </div>
 
+                        <label class="tiptap-modal__checkbox">
+                            <input type="checkbox" v-model="openInNewWindow" />
+                            <span class="tiptap-modal__checkbox-label">{{ ttt('open in new window') }}</span>
+                        </label>
+                    </div>
+
+                    <!-- File Upload Mode -->
+                    <div v-if="withFileUpload" v-show="linkMode == 'file'">
+                        <div class="tiptap-modal__section">
                             <div
-                                class="ml-1 mt-1 help-text"
-                                v-text="ttt('external links should start with http:// or https://')"
-                            ></div>
-
-                            <div class="flex items-center mt-3">
-                                <Checkbox
-                                    @input="openInNewWindow = !openInNewWindow"
-                                    :id="'openInNewWindow_' + field.attribute"
-                                    :checked="openInNewWindow"
-                                />
-                                <label
-                                    class="text-sm ml-2"
-                                    :for="'openInNewWindow_' + field.attribute"
-                                    v-text="ttt('open in new window')"
-                                >
+                                class="tiptap-modal__file-upload"
+                                :class="{ 'opacity-50 pointer-events-none': uploading }"
+                            >
+                                <label class="tiptap-modal__file-button">
+                                    <input
+                                        ref="fileInput"
+                                        type="file"
+                                        @change="changeFile($event.target.files)"
+                                        style="display: none"
+                                    />
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"></path>
+                                        <polyline points="17 8 12 3 7 8"></polyline>
+                                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                                    </svg>
+                                    {{ ttt('select file') }}
                                 </label>
+                                <span v-if="!file" class="tiptap-modal__file-name">{{ ttt('no file selected') }}</span>
+                                <span v-if="file" class="tiptap-modal__file-name">{{ filename }}</span>
+                                <button v-if="file" type="button" class="tiptap-modal__file-remove" @click="removeFile()">
+                                    <tiptap-icon name="trash" />
+                                </button>
+                            </div>
+                            <div v-if="uploading" class="tiptap-modal__progress">
+                                <div class="tiptap-modal__progress-bar" :style="{ width: uploadProgress + '%' }"></div>
                             </div>
                         </div>
                     </div>
 
-                    <div
-                        v-if="withFileUpload"
-                        v-show="linkMode == 'file'"
-                    >
-                        <div
-                            class="flex items-center transition-opacity duration-150"
-                            :class="{
-                                'pointer-events-none opacity-50': uploading,
-                            }"
-                        >
-                            <label
-                                class="relative inline-flex items-center justify-center border bg-primary-500 border-primary-500 hover:[&:not(:disabled)]:bg-primary-400 hover:[&:not(:disabled)]:border-primary-400 text-white dark:text-gray-900 rounded font-bold text-sm shadow h-9 px-3 cursor-pointer"
-                            >
-                                <input
-                                    ref="fileInput"
-                                    type="file"
-                                    @change="changeFile($event.target.files)"
-                                    class="w-full h-full absolute top-0 left-0 cursor-pointer opacity-0"
-                                />
-                                <span v-text="ttt('select file')"></span>
+                    <div class="tiptap-modal__divider"></div>
+
+                    <!-- Advanced Options -->
+                    <div class="tiptap-modal__row">
+                        <div class="tiptap-modal__section">
+                            <label class="tiptap-modal__label">{{ ttt('custom css classes') }}</label>
+                            <input v-model="extraClasses" type="text" class="tiptap-modal__input" />
+                        </div>
+                        <div class="tiptap-modal__section">
+                            <label class="tiptap-modal__label">{{ ttt('title') }}</label>
+                            <input v-model="title" type="text" class="tiptap-modal__input" />
+                        </div>
+                    </div>
+
+                    <div class="tiptap-modal__section">
+                        <label class="tiptap-modal__label">{{ ttt('Link attributes') }}</label>
+                        <div class="tiptap-modal__checkbox-group">
+                            <label class="tiptap-modal__checkbox">
+                                <input type="checkbox" v-model="nofollow" />
+                                <span class="tiptap-modal__checkbox-label">{{ ttt('Prevent search engines from following') }} (nofollow)</span>
                             </label>
-
-                            <div
-                                class="h-16 flex items-center"
-                                style="margin-left: 16px"
-                            >
-                                <span
-                                    v-if="!file"
-                                    v-text="ttt('no file selected')"
-                                >
-                                </span>
-
-                                <span
-                                    v-if="file"
-                                    v-text="filename"
-                                >
-                                </span>
-                            </div>
-
-                            <div
-                                v-if="file"
-                                @click="removeFile()"
-                                class="cursor-pointer text-xl text-primary"
-                                style="margin-left: 16px"
-                            >
-                                <font-awesome-icon :icon="['fas', 'trash-alt']">
-                                </font-awesome-icon>
-                            </div>
-                        </div>
-
-                        <div
-                            class="w-full h-2 mt-3"
-                            :class="{
-                                'bg-gray-200': uploading,
-                            }"
-                        >
-                            <div
-                                class="bg-primary-400 h-full"
-                                :style="{
-                                    width: uploadProgress + '%',
-                                }"
-                            ></div>
-                        </div>
-                    </div>
-
-                    <div class="mt-8">
-                        <label
-                            class="block text-sm mb-1 ml-1"
-                            v-text="ttt('custom css classes')"
-                        >
-                        </label>
-
-                        <input
-                            class="w-full form-control form-input form-control-bordered"
-                            type="text"
-                            v-model="extraClasses"
-                        />
-
-                        <label
-                            class="block text-sm mt-3 mb-1 ml-1"
-                            v-text="ttt('title')"
-                        >
-                        </label>
-
-                        <input
-                            class="w-full form-control form-input form-control-bordered"
-                            type="text"
-                            v-model="title"
-                        />
-
-                        <div
-                            class="mt-3"
-                            style="display: grid; grid-template-columns: 1fr 1fr 1fr;"
-                        >
-                            <div class="flex items-center">
-                                <Checkbox
-                                    @input="nofollow = !nofollow"
-                                    :id="'nofollow_' + field.attribute"
-                                    :checked="nofollow"
-                                />
-                                <label
-                                    class="text-sm ml-2"
-                                    :for="'nofollow_' + field.attribute"
-                                    v-text="'nofollow'"
-                                >
-                                </label>
-                            </div>
-
-                            <div class="flex items-center">
-                                <Checkbox
-                                    @input="noopener = !noopener"
-                                    :id="'noopener_' + field.attribute"
-                                    :checked="noopener"
-                                />
-                                <label
-                                    class="text-sm ml-2"
-                                    :for="'noopener_' + field.attribute"
-                                    v-text="'noopener'"
-                                >
-                                </label>
-                            </div>
-
-                            <div class="flex items-center">
-                                <Checkbox
-                                    @input="noreferrer = !noreferrer"
-                                    :id="'noreferrer_' + field.attribute"
-                                    :checked="noreferrer"
-                                />
-                                <label
-                                    class="text-sm ml-2"
-                                    :for="'noreferrer_' + field.attribute"
-                                    v-text="'noreferrer'"
-                                >
-                                </label>
-                            </div>
+                            <label class="tiptap-modal__checkbox">
+                                <input type="checkbox" v-model="noopener" />
+                                <span class="tiptap-modal__checkbox-label">{{ ttt('Prevent access to opener window') }} (noopener)</span>
+                            </label>
+                            <label class="tiptap-modal__checkbox">
+                                <input type="checkbox" v-model="noreferrer" />
+                                <span class="tiptap-modal__checkbox-label">{{ ttt('Hide referrer information') }} (noreferrer)</span>
+                            </label>
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-gray-100 dark:bg-gray-700 px-6 py-3">
-                    <div class="flex items-center justify-end">
-                        <Button
-                            class="mr-4"
-                            dusk="cancel-link-button"
-                            variant="ghost"
-                            :label="ttt('cancel')"
-                            @click="hideLinkMenu"
-                        />
-
-                        <Button
-                            dusk="set-link-button"
-                            type="button"
-                            @click="linkMode == 'url' ? setLinkFromUrl($event) : uploadAndAddFile($event)"
-                            :disabled="(linkMode == 'url' && !url) || (linkMode == 'file' && !file)"
-                            :label="linkMode == 'url' ? ttt('set link') : ttt('upload and link file')"
-                        />
-                    </div>
+                <div class="tiptap-modal__footer">
+                    <button type="button" class="tiptap-modal__btn tiptap-modal__btn--ghost" @click="hideAdvancedModal">
+                        {{ ttt('cancel') }}
+                    </button>
+                    <button
+                        type="button"
+                        class="tiptap-modal__btn tiptap-modal__btn--primary"
+                        :disabled="(linkMode == 'url' && !url) || (linkMode == 'file' && !file)"
+                        @click="linkMode == 'url' ? setLinkFromUrl($event) : uploadAndAddFile($event)"
+                    >
+                        {{ linkMode == 'url' ? ttt('set link') : ttt('upload and link file') }}
+                    </button>
                 </div>
             </div>
         </Modal>
 
-        <span class="whitespace-nowrap">
+        <!-- Inline Link Dropdown -->
+        <div class="tiptap-link-dropdown" v-click-outside="closeDropdown">
             <base-button
                 :isActive="linkIsActive"
                 :isDisabled="!linkCanBeUsed"
-                :clickMethod="showLinkMenu"
+                :clickMethod="toggleDropdown"
                 :title="!linkIsActive ? ttt('set link') : ttt('edit link')"
-                :icon="['fas', 'link']"
-            >
-            </base-button>
+                icon="link"
+            />
 
-            <base-button
-                :isActive="linkIsActive"
-                :isDisabled="!linkCanBeUsed"
-                :clickMethod="unsetLink"
-                :title="ttt('unset link')"
-                :icon="['fas', 'unlink']"
-            >
-            </base-button>
-        </span>
+            <div v-show="showDropdown" class="tiptap-link-dropdown__menu">
+                <div class="tiptap-link-dropdown__content">
+                    <input
+                        ref="urlInput"
+                        v-model="url"
+                        type="text"
+                        class="tiptap-link-dropdown__input"
+                        :placeholder="ttt('Paste a link...')"
+                        @keydown.enter.prevent="applyLink"
+                    />
+                    <button
+                        type="button"
+                        class="tiptap-link-dropdown__button"
+                        :title="ttt('apply')"
+                        :disabled="!url"
+                        @click="applyLink"
+                    >
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="9 10 4 15 9 20"></polyline>
+                            <path d="M20 4v7a4 4 0 01-4 4H4"></path>
+                        </svg>
+                    </button>
+                    <button
+                        v-if="url && linkIsActive"
+                        type="button"
+                        class="tiptap-link-dropdown__button"
+                        :title="ttt('open link')"
+                        @click="openLink"
+                    >
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"></path>
+                            <polyline points="15 3 21 3 21 9"></polyline>
+                            <line x1="10" y1="14" x2="21" y2="3"></line>
+                        </svg>
+                    </button>
+                    <button
+                        v-if="linkIsActive"
+                        type="button"
+                        class="tiptap-link-dropdown__button tiptap-link-dropdown__button--danger"
+                        :title="ttt('remove link')"
+                        @click="unsetLink"
+                    >
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="3 6 5 6 21 6"></polyline>
+                            <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"></path>
+                        </svg>
+                    </button>
+                </div>
+                <button
+                    v-if="withFileUpload || linkIsActive"
+                    type="button"
+                    class="tiptap-link-dropdown__advanced"
+                    @click="openAdvancedModal"
+                >
+                    {{ ttt('advanced options') }}
+                </button>
+            </div>
+        </div>
     </span>
 </template>
 
 <script>
 import { Button } from "laravel-nova-ui";
 import buttonHovers from "../../mixins/buttonHovers";
-
-import { library } from "@fortawesome/fontawesome-svg-core";
-
-import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import BaseButton from "./BaseButton.vue";
-
+import { TiptapIcon } from "../icons";
 import translations from "../../mixins/translations";
-
-library.add(faTimesCircle);
 
 export default {
     mixins: [buttonHovers, translations],
@@ -275,7 +208,8 @@ export default {
 
     data: function () {
         return {
-            linkMenuIsActive: false,
+            showDropdown: false,
+            showAdvancedModal: false,
             url: "",
             openInNewWindow: false,
             file: null,
@@ -292,9 +226,25 @@ export default {
     },
 
     components: {
-        FontAwesomeIcon,
+        TiptapIcon,
         BaseButton,
         Button,
+    },
+
+    directives: {
+        'click-outside': {
+            mounted(el, binding) {
+                el._clickOutside = (event) => {
+                    if (!(el === event.target || el.contains(event.target))) {
+                        binding.value();
+                    }
+                };
+                document.addEventListener('click', el._clickOutside);
+            },
+            unmounted(el) {
+                document.removeEventListener('click', el._clickOutside);
+            },
+        },
     },
 
     computed: {
@@ -309,43 +259,83 @@ export default {
         },
 
         withFileUpload() {
-            return !this.field.linkSettings 
-                ||
-                (
-                    typeof this.field.linkSettings.withFileUpload != "boolean"
-                    || this.field.linkSettings.withFileUpload
-                );
+            return !this.field.linkSettings
+                || (typeof this.field.linkSettings.withFileUpload != "boolean" || this.field.linkSettings.withFileUpload);
         },
     },
 
     methods: {
-        showLinkMenu() {
-            if (this.linkIsActive) {
-                let attributes = this.editor.getAttributes("link");
-                this.url = attributes.href;
-                this.openInNewWindow = attributes.target == "_blank" ? true : false;
-                this.linkMode = attributes["tt-mode"] ? attributes["tt-mode"] : "url";
-                this.extraClasses = attributes.class ? attributes.class : "";
-                this.title = attributes.title ? attributes.title : "";
-                this.nofollow = attributes.rel && attributes.rel.indexOf("nofollow") > -1 ? true : false;
-                this.noopener = attributes.rel && attributes.rel.indexOf("noopener") > -1 ? true : false;
-                this.noreferrer = attributes.rel && attributes.rel.indexOf("noreferrer") > -1 ? true : false;
+        toggleDropdown() {
+            if (this.showDropdown) {
+                this.closeDropdown();
             } else {
-                this.url = "";
-                this.openInNewWindow = false;
-                this.nofollow = false;
-                this.noopener = false;
-                this.noreferrer = false;
-                this.linkMode = "url";
-                this.extraClasses = "";
-                this.title = "";
+                this.openDropdown();
             }
-
-            this.linkMenuIsActive = true;
         },
 
-        hideLinkMenu() {
-            this.linkMenuIsActive = false;
+        openDropdown() {
+            if (this.linkIsActive) {
+                let attributes = this.editor.getAttributes("link");
+                this.url = attributes.href || "";
+                this.openInNewWindow = attributes.target == "_blank";
+                this.linkMode = attributes["tt-mode"] || "url";
+                this.extraClasses = attributes.class || "";
+                this.title = attributes.title || "";
+                this.nofollow = attributes.rel && attributes.rel.indexOf("nofollow") > -1;
+                this.noopener = attributes.rel && attributes.rel.indexOf("noopener") > -1;
+                this.noreferrer = attributes.rel && attributes.rel.indexOf("noreferrer") > -1;
+            } else {
+                this.resetForm();
+            }
+
+            this.showDropdown = true;
+            this.$nextTick(() => {
+                if (this.$refs.urlInput) {
+                    this.$refs.urlInput.focus();
+                }
+            });
+        },
+
+        closeDropdown() {
+            this.showDropdown = false;
+        },
+
+        resetForm() {
+            this.url = "";
+            this.openInNewWindow = false;
+            this.nofollow = false;
+            this.noopener = false;
+            this.noreferrer = false;
+            this.linkMode = "url";
+            this.extraClasses = "";
+            this.title = "";
+        },
+
+        applyLink() {
+            if (!this.url) return;
+
+            let attributes = {
+                href: this.url,
+                "tt-mode": "url",
+            };
+
+            this.setLink(attributes);
+            this.closeDropdown();
+        },
+
+        openLink() {
+            if (this.url) {
+                window.open(this.url, '_blank');
+            }
+        },
+
+        openAdvancedModal() {
+            this.closeDropdown();
+            this.showAdvancedModal = true;
+        },
+
+        hideAdvancedModal() {
+            this.showAdvancedModal = false;
         },
 
         removeFile() {
@@ -377,41 +367,33 @@ export default {
             data.append("path", this.filePath);
 
             const config = {
-                headers: {
-                    "Content-Type": "multipart/form-data",
-                },
+                headers: { "Content-Type": "multipart/form-data" },
                 onUploadProgress: (progressEvent) =>
-                    (this.uploadProgress =
-                        (progressEvent.loaded / progressEvent.total) * 100),
+                    (this.uploadProgress = (progressEvent.loaded / progressEvent.total) * 100),
             };
 
             axios
                 .post("/nova-tiptap/api/file", data, config)
-                .then(
-                    function (response) {
-                        this.resetUploading();
-                        this.removeFile();
+                .then((response) => {
+                    this.resetUploading();
+                    this.removeFile();
 
-                        let startPosition = response.data.url.lastIndexOf("/");
-                        let filename = response.data.url.substr(startPosition + 1);
+                    let startPosition = response.data.url.lastIndexOf("/");
+                    let filename = response.data.url.substr(startPosition + 1);
 
-                        let attributes = {
-                            href: response.data.url,
-                            "tt-mode": "file",
-                            download: filename,
-                        };
+                    let attributes = {
+                        href: response.data.url,
+                        "tt-mode": "file",
+                        download: filename,
+                    };
 
-                        this.setLink(attributes);
-
-                        this.hideLinkMenu();
-                    }.bind(this)
-                )
-                .catch(
-                    function (error) {
-                        this.resetUploading();
-                        this.removeFile();
-                    }.bind(this)
-                );
+                    this.setLink(attributes);
+                    this.hideAdvancedModal();
+                })
+                .catch(() => {
+                    this.resetUploading();
+                    this.removeFile();
+                });
         },
 
         setLinkFromUrl(e) {
@@ -420,17 +402,11 @@ export default {
             let attributes = {
                 href: this.url,
                 "tt-mode": "url",
+                target: this.openInNewWindow ? "_blank" : "_self",
             };
 
-            if (this.openInNewWindow) {
-                attributes.target = "_blank";
-            } else {
-                attributes.target = "_self";
-            }
-
             this.setLink(attributes);
-
-            this.hideLinkMenu();
+            this.hideAdvancedModal();
         },
 
         setLink(attributes) {
@@ -442,21 +418,13 @@ export default {
             }
             if (this.nofollow || this.noopener || this.noreferrer) {
                 attributes.rel = "";
-                if (this.nofollow) {
-                    attributes.rel += "nofollow ";
-                }
-                if (this.noopener) {
-                    attributes.rel += "noopener ";
-                }
-                if (this.noreferrer) {
-                    attributes.rel += "noreferrer ";
-                }
-                attributes.rel = _.trim(attributes.rel);
+                if (this.nofollow) attributes.rel += "nofollow ";
+                if (this.noopener) attributes.rel += "noopener ";
+                if (this.noreferrer) attributes.rel += "noreferrer ";
+                attributes.rel = attributes.rel.trim();
             }
 
-            if (this.editor.isActive("image")) {
-                let attributes = this.editor.getAttributes("image");
-            } else {
+            if (!this.editor.isActive("image")) {
                 this.editor.chain().extendMarkRange("link").unsetLink().run();
                 this.editor.chain().focus().setLink(attributes).run();
             }
@@ -464,6 +432,7 @@ export default {
 
         unsetLink() {
             this.editor.chain().focus().unsetLink().run();
+            this.closeDropdown();
         },
     },
 };

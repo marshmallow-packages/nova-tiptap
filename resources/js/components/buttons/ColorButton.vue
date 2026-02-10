@@ -6,7 +6,7 @@
             :title="mode === 'color' ? 'Color' : 'Background color'"
             style="top: -2px;"
             :clickMethod="buttonClickMethod">
-            <font-awesome-icon :icon="['fas', mode === 'color' ? 'a' : 'pen-fancy']" />
+            <tiptap-icon :name="mode === 'color' ? 'color' : 'background-color'" />
             <div class="color-indicator" :style="{ 'background-color': currentColor }"></div>
         </base-button>
 
@@ -21,14 +21,14 @@
                         @click="setColor(color, true)">
                     </div>
                     <div class="custom-color-option">
-                        <font-awesome-icon
-                            :icon="['fas', 'droplet-slash']"
+                        <tiptap-icon
+                            name="clear-color"
                             class="custom-color-option-icon"
                             @click="setColor(undefined, true)" />
                     </div>
                     <div class="custom-color-option">
-                        <font-awesome-icon
-                            :icon="['fas', 'swatchbook']"
+                        <tiptap-icon
+                            name="swatchbook"
                             class="custom-color-option-icon"
                             :style="{ color: currentColor }"
                             @click="customColorClick" />
@@ -46,12 +46,12 @@
 
 <script>
 import BaseButton from "./BaseButton.vue";
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { TiptapIcon } from "../icons";
 import colorUtils from '../../mixins/colorUtils';
 
 export default {
     props: ['editor', 'colors', 'mode'],
-    components: {BaseButton, FontAwesomeIcon},
+    components: {BaseButton, TiptapIcon},
     mixins: [colorUtils],
     computed: {
         currentColor() {

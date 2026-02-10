@@ -1,250 +1,133 @@
 <template>
     <span style="z-index: 10">
-        <Modal
-            :show="imageMenuIsActive"
-            tabindex="-1"
-        >
-            <div class="px-8 py-8 bg-white">
-                <div
-                    v-if="!imageIsActive && withFileUpload"
-                >
-                    <span
-                        class="inline-block uppercase cursor-pointer font-bold text-sm border-b mr-4"
-                        :class="{
-                            'text-primary-500 border-primary-500': imageMode == 'file',
-                            'text-gray-500 border-transparent': imageMode != 'file'
-                        }"
+        <Modal :show="imageMenuIsActive" tabindex="-1">
+            <div class="tiptap-modal">
+                <div v-if="!imageIsActive && withFileUpload" class="tiptap-modal__header">
+                    <button
+                        type="button"
+                        class="tiptap-modal__tab"
+                        :class="{ 'tiptap-modal__tab--active': imageMode == 'file' }"
                         @click="imageMode = 'file'"
-                        v-text="ttt('file upload')"
                     >
-                    </span>
-
-                    <span
-                        class="inline-block uppercase cursor-pointer font-bold text-sm border-b"
-                        :class="{
-                            'text-primary-500 border-primary-500': imageMode == 'url',
-                            'text-gray-500 border-transparent': imageMode != 'url'
-                        }"
-                        @click="imageMode = 'url'"
-                        v-text="ttt('external url')"
-                    >
-                    </span>
-                </div>
-
-                <div
-                    v-if="!imageIsActive"
-                    style="padding-top: 32px;"
-                >
-                    <div v-if="withFileUpload" v-show="imageMode == 'file'">
-                        <div
-                            class="flex items-center"
-                            :class="{
-                                'pointer-events-none opacity-50': uploading
-                            }"
-                        >
-                            <label
-                                class="
-                                    relative bg-primary-500 text-white rounded
-                                    font-bold shadow py-1 px-4 cursor-pointer
-                                "
-                            >
-                                <input
-                                    ref="fileInput"
-                                    type="file"
-                                    @change="changeFile($event.target.files)"
-                                    accept="image/*"
-                                    class="w-full h-full absolute top-0 left-0"
-                                    style="opacity: 0"
-                                />
-                                <span v-text="ttt('select file')"></span>
-                            </label>
-
-                            <div
-                                class="h-16 flex items-center"
-                                style="margin-left: 16px;"
-                            >
-                                <span
-                                    v-if="!preview"
-                                    v-text="ttt('no file selected')"
-                                >
-                                </span>
-                                <img
-                                    v-if="preview"
-                                    :src="preview"
-                                    class="w-auto"
-                                    style="height: 64px"
-                                />
-                            </div>
-
-                            <div
-                                v-if="file"
-                                @click="removeFile()"
-                                class="
-                                    cursor-pointer text-xl text-primary
-                                "
-                                style="margin-left: 16px;"
-                            >
-                                <font-awesome-icon :icon="['fas', 'trash-alt']">
-                                </font-awesome-icon>
-                            </div>
-                        </div>
-
-                        <div
-                            class="w-full h-2"
-                            :class="{
-                                'bg-gray-200': uploading
-                            }"
-                            style="margin-top: 16px"
-                        >
-                            <div
-                                class="
-                                    bg-primary-400 h-full
-                                "
-                                :style="{
-                                    'width': uploadProgress+'%'
-                                }"
-                            >
-
-                            </div>
-                        </div>
-                    </div>
-
-                    <div
-                        class=""
-                        v-show="imageMode == 'url'"
-                    >
-                        <div class="flex flex-col">
-                            <label class="text-sm mb-1 ml-1" v-text="ttt('url')"></label>
-                            <input
-                                class="
-                                    form-input
-                                    form-input-bordered
-                                    px-2 py-1 w-full
-                                    text-sm text-90
-                                    leading-none
-                                "
-                                type="text"
-                                v-model="url"
-                                placeholder="https://"
-                            />
-                        </div>
-                    </div>
-                </div>
-
-                <div style="padding-top: 32px">
-                    <div class="flex flex-col">
-                        <label class="text-sm mb-1 ml-1" v-text="ttt('custom css classes')"></label>
-                        <input
-                            class="
-                                form-input
-                                form-input-bordered
-                                px-2 py-1 w-full
-                                text-sm text-90
-                                leading-none
-                            "
-                            type="text"
-                            v-model="extraClasses"
-                        />
-                    </div>
-
-                    <div
-                        class="grid grid-cols-2 gap-3 mt-3"
-                    >
-                        <div class="flex flex-col">
-                            <label class="text-sm mb-1 ml-1" v-text="ttt('title')"></label>
-                            <input
-                                class="
-                                    form-input
-                                    form-input-bordered
-                                    px-2 py-1 w-full
-                                    text-sm text-90
-                                    leading-none
-                                "
-                                type="text"
-                                v-model="title"
-                            />
-                        </div>
-
-                        <div class="flex flex-col mt-3">
-                            <label class="text-sm mb-1 ml-1" v-text="ttt('alt text')"></label>
-                            <input
-                                class="
-                                    form-input
-                                    form-input-bordered
-                                    px-2 py-1 w-full
-                                    text-sm text-90
-                                    leading-none
-                                "
-                                type="text"
-                                v-model="alt"
-                            />
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-gray-200 px-8 py-3">
-                <div class="flex items-center justify-end">
-                    <button
-                        type="button"
-                        class="
-                            font-bold py-1 cursor-pointer
-                            mr-4
-                        "
-                        @click="hideImageMenu"
-                        v-text="ttt('cancel')"
-                    >
+                        {{ ttt('file upload') }}
                     </button>
-
                     <button
                         type="button"
-                        class="
-                            relative bg-primary-500 text-white rounded
-                            font-bold shadow py-1 px-4 cursor-pointer
-                        "
-                        :style="((imageMode == 'url' && !url) || (imageMode == 'file' && !file)) ? 'opacity: 0.5' : ''"
+                        class="tiptap-modal__tab"
+                        :class="{ 'tiptap-modal__tab--active': imageMode == 'url' }"
+                        @click="imageMode = 'url'"
+                    >
+                        {{ ttt('external url') }}
+                    </button>
+                </div>
 
+                <div class="tiptap-modal__body">
+                    <!-- File Upload / URL for new images -->
+                    <div v-if="!imageIsActive">
+                        <!-- File Upload Mode -->
+                        <div v-if="withFileUpload" v-show="imageMode == 'file'">
+                            <div class="tiptap-modal__section">
+                                <div
+                                    class="tiptap-modal__file-upload"
+                                    :class="{ 'opacity-50 pointer-events-none': uploading }"
+                                >
+                                    <label class="tiptap-modal__file-button">
+                                        <input
+                                            ref="fileInput"
+                                            type="file"
+                                            @change="changeFile($event.target.files)"
+                                            accept="image/*"
+                                            style="display: none"
+                                        />
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                            <polyline points="21 15 16 10 5 21"></polyline>
+                                        </svg>
+                                        {{ ttt('select image') }}
+                                    </label>
+                                    <span v-if="!preview" class="tiptap-modal__file-name">{{ ttt('no file selected') }}</span>
+                                    <img v-if="preview" :src="preview" style="height: 48px; width: auto; border-radius: 6px;" />
+                                    <button v-if="file" type="button" class="tiptap-modal__file-remove" @click="removeFile()">
+                                        <tiptap-icon name="trash" />
+                                    </button>
+                                </div>
+                                <div v-if="uploading" class="tiptap-modal__progress">
+                                    <div class="tiptap-modal__progress-bar" :style="{ width: uploadProgress + '%' }"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- URL Mode -->
+                        <div v-show="imageMode == 'url'">
+                            <div class="tiptap-modal__section">
+                                <label class="tiptap-modal__label">{{ ttt('image url') }}</label>
+                                <input
+                                    v-model="url"
+                                    type="text"
+                                    class="tiptap-modal__input"
+                                    placeholder="https://example.com/image.jpg"
+                                />
+                            </div>
+                        </div>
+
+                        <div class="tiptap-modal__divider"></div>
+                    </div>
+
+                    <!-- Image Properties -->
+                    <div class="tiptap-modal__section">
+                        <label class="tiptap-modal__label">{{ ttt('custom css classes') }}</label>
+                        <input v-model="extraClasses" type="text" class="tiptap-modal__input" />
+                    </div>
+
+                    <div class="tiptap-modal__row">
+                        <div class="tiptap-modal__section">
+                            <label class="tiptap-modal__label">{{ ttt('title') }}</label>
+                            <input v-model="title" type="text" class="tiptap-modal__input" />
+                        </div>
+                        <div class="tiptap-modal__section">
+                            <label class="tiptap-modal__label">{{ ttt('alt text') }}</label>
+                            <input v-model="alt" type="text" class="tiptap-modal__input" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tiptap-modal__footer">
+                    <button type="button" class="tiptap-modal__btn tiptap-modal__btn--ghost" @click="hideImageMenu">
+                        {{ ttt('cancel') }}
+                    </button>
+                    <button
+                        type="button"
+                        class="tiptap-modal__btn tiptap-modal__btn--primary"
                         :disabled="!imageIsActive && ((imageMode == 'url' && !url) || (imageMode == 'file' && !file))"
                         @click="imageIsActive ? updateImage($event) : (imageMode == 'url' ? addImageFromUrl($event) : uploadAndAddImage($event))"
-                        v-text="imageIsActive ? ttt('update image') : (imageMode == 'url' ? ttt('add image') : ttt('upload and add image'))"
                     >
+                        {{ imageIsActive ? ttt('update image') : (imageMode == 'url' ? ttt('add image') : ttt('upload image')) }}
                     </button>
                 </div>
             </div>
         </Modal>
 
-        <span class="whitespace-nowrap">
-            <base-button
-                :isActive="imageIsActive"
-                :isDisabled="mode != 'editor'"
-                :clickMethod="showImageMenu"
-                :icon="['fas', 'image']"
-                :title="!imageIsActive ? ttt('add image') : ttt('edit image')"
-            >
-
-            </base-button>
-
-
-        </span>
+        <base-button
+            :isActive="imageIsActive"
+            :isDisabled="mode != 'editor'"
+            :clickMethod="showImageMenu"
+            icon="image"
+            :title="!imageIsActive ? ttt('add image') : ttt('edit image')"
+        />
     </span>
 </template>
 
 <script>
-import { library } from '@fortawesome/fontawesome-svg-core';
-
-import { faTimesCircle, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import BaseButton from './BaseButton.vue';
-
+import { TiptapIcon } from '../icons';
 import translations from '../../mixins/translations';
-
-library.add(faTimesCircle, faTrashAlt);
 
 export default {
     mixins: [translations],
 
     props: [
-        'button', 
+        'button',
         'editor',
         'field',
         'mode',
@@ -268,13 +151,13 @@ export default {
     },
 
     components: {
-        FontAwesomeIcon,
+        TiptapIcon,
         BaseButton,
     },
 
     computed: {
         imageIsActive() {
-           return this.editor ? this.editor.isActive('image') : false;
+           return this.editor ? this.editor.isActive('imageResize') : false;
         },
         withFileUpload() {
             return !this.field.imageSettings
@@ -292,7 +175,7 @@ export default {
     methods: {
         showImageMenu() {
             if (this.imageIsActive) {
-                let attributes = this.editor.getAttributes('image');
+                let attributes = this.editor.getAttributes('imageResize');
                 this.url = attributes.src;
                 this.imageMode = attributes['tt-mode'] ? attributes['tt-mode'] : this.defaultMode;
                 this.extraClasses = attributes.class ? attributes.class : '';
@@ -399,7 +282,7 @@ export default {
                 alt: this.alt,
             };
 
-            this.editor.chain().focus().updateAttributes('image', attributes).run();
+            this.editor.chain().focus().updateAttributes('imageResize', attributes).run();
             
             this.hideImageMenu();
         }

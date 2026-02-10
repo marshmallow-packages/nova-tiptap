@@ -65,7 +65,7 @@
             <base-button
                 :isDisabled="mode != 'editor'"
                 :clickMethod="showMenu"
-                :icon="['fas', 'cubes']"
+                icon="content-block"
                 :title="__('add content')"
             >
                 
