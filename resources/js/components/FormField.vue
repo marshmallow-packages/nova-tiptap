@@ -253,6 +253,7 @@
     import VideoContentBlockExtension from "./content-blocks/VideoContentBlockExtension.js";
     import GalleryContentBlockExtension from "./content-blocks/GalleryContentBlockExtension.js";
     import BackgroundColorExtension from "../extensions/BackgroundColor.js";
+    import Iframe from "../extensions/iframe.js";
 
     export default {
         mixins: [
@@ -511,6 +512,7 @@
                 TextStyle,
                 Color,
                 BackgroundColorExtension,
+                Iframe,
                 Underline,
                 Subscript,
                 Superscript,
@@ -855,6 +857,23 @@
                     width: 4px;
                     background-color: #adf;
                     pointer-events: none;
+                }
+            }
+
+            .iframe-wrapper {
+                position: relative;
+                padding-bottom: 56.25%; /* 16:9 aspect ratio */
+                height: 0;
+                overflow: hidden;
+                margin: 1em 0;
+
+                iframe {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    border: 0;
                 }
             }
         }

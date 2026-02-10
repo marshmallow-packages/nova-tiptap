@@ -1,56 +1,55 @@
-import { Node } from 'tiptap'
+import { Node, mergeAttributes } from '@tiptap/core'
 
-export default class Iframe extends Node {
+export default Node.create({
+    name: 'iframe',
 
-    get name() {
-        return 'iframe'
-    }
+    group: 'block',
 
-    get schema() {
+    atom: true,
+
+    addAttributes() {
         return {
-            attrs: {
-                src: {
-                    default: null,
-                },
+            src: {
+                default: null,
             },
-            group: 'block',
-            selectable: false,
-            parseDOM: [{
+            frameborder: {
+                default: '0',
+            },
+            allowfullscreen: {
+                default: 'true',
+            },
+            width: {
+                default: '560',
+            },
+            height: {
+                default: '315',
+            },
+            allow: {
+                default: 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture',
+            },
+        }
+    },
+
+    parseHTML() {
+        return [
+            {
                 tag: 'iframe',
-                getAttrs: dom => ({
-                    src: dom.getAttribute('src'),
-                }),
-            }],
-            toDOM: node => ['iframe', {
-                src: node.attrs.src,
-                frameborder: 0,
-                allowfullscreen: 'true',
-            }],
-        }
-    }
-
-    get view() {
-        return {
-            props: ['node', 'updateAttrs', 'view'],
-            computed: {
-                src: {
-                    get() {
-                        return this.node.attrs.src
-                    },
-                    set(src) {
-                        this.updateAttrs({
-                            src,
-                        })
-                    },
-                },
             },
-            template: `
-        <div class="iframe">
-          <iframe class="iframe__embed" :src="src"></iframe>
-          <input class="iframe__input" @paste.stop type="text" v-model="src" v-if="view.editable" />
-        </div>
-      `,
-        }
-    }
+        ]
+    },
 
-}
+    renderHTML({ HTMLAttributes }) {
+        return ['div', { class: 'iframe-wrapper' }, ['iframe', mergeAttributes(HTMLAttributes)]]
+    },
+
+    addCommands() {
+        return {
+            setIframe: (options) => ({ commands }) => {
+                return commands.insertContent({
+                    type: this.name,
+                    attrs: options,
+                })
+            },
+        }
+    },
+})
