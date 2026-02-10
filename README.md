@@ -50,7 +50,10 @@ Tiptap::make('Content')
 
 | Button             | Description                                                                                     |
 | ------------------ | ----------------------------------------------------------------------------------------------- |
-| `heading`          | Text headings (H1, H2, H3, etc.)                                                                |
+| `heading`          | Text headings dropdown (H1, H2, H3, etc.)                                                       |
+| `headingDropdown`  | Alias for `heading`                                                                             |
+| `listDropdown`     | Bullet and ordered lists in a dropdown                                                          |
+| `alignDropdown`    | Text alignment options in a dropdown                                                            |
 | `color`            | Color text formatting                                                                           |
 | `backgroundColor`  | Background color formatting                                                                     |
 | `bold`             | Bold text formatting                                                                            |
@@ -63,7 +66,8 @@ Tiptap::make('Content')
 | `code`             | Inline code formatting                                                                          |
 | `codeBlock`        | Block code with optional syntax highlighting                                                    |
 | `blockquote`       | Block quotes                                                                                    |
-| `image`            | Insert and upload images                                                                        |
+| `image`            | Insert and upload images via modal                                                              |
+| `imageUpload`      | Insert a drag & drop upload zone                                                                |
 | `table`            | Create and edit tables                                                                          |
 | `tableAlternative` | Alternative UI for creating and editing tables. Supports coloring cell's background and border. |
 | `textAlign`        | Text alignment options                                                                          |
@@ -79,10 +83,28 @@ Tiptap::make('Content')
 
 ### Headings
 
+The `heading` button displays a dropdown with heading levels and paragraph option:
+
 ```php
 Tiptap::make('Content')
   ->buttons(['heading'])
   ->headingLevels([2, 3, 4]) // Only allow H2, H3, H4 (default: H1-H3)
+```
+
+### Lists
+
+Use `listDropdown` for a compact dropdown with bullet and ordered list options:
+
+```php
+Tiptap::make('Content')
+  ->buttons(['listDropdown'])
+```
+
+Or use separate buttons:
+
+```php
+Tiptap::make('Content')
+  ->buttons(['bulletList', 'orderedList'])
 ```
 
 ### Links
@@ -111,11 +133,50 @@ Tiptap::make('Content')
   ])
 ```
 
-### Text Alignment
+#### Drag & Drop Upload
+
+Images can be dragged directly into the editor or pasted from the clipboard. They will automatically upload using your `imageSettings` configuration.
+
+#### Image Upload Zone
+
+Use the `imageUpload` button to insert a TipTap-style drop zone in the editor:
 
 ```php
 Tiptap::make('Content')
-  ->buttons(['textAlign'])
+  ->buttons(['imageUpload', 'image'])
+  ->imageSettings([
+    'disk' => 'public',
+    'path' => 'uploads/images',
+  ])
+```
+
+### Bubble Menu
+
+A floating toolbar appears when text is selected. Configure which buttons appear:
+
+```php
+Tiptap::make('Content')
+  ->bubbleMenuButtons(['bold', 'italic', '|', 'link', 'color'])
+```
+
+Available bubble menu buttons: `bold`, `italic`, `strike`, `underline`, `code`, `highlight`, `subscript`, `superscript`, `link`, `color`, `backgroundColor`, `|` (separator)
+
+To disable the bubble menu:
+
+```php
+Tiptap::make('Content')
+  ->withoutBubbleMenu()
+```
+
+### Text Alignment
+
+Use `alignDropdown` for a compact dropdown or `textAlign` for separate buttons:
+
+```php
+Tiptap::make('Content')
+  ->buttons(['alignDropdown']) // Dropdown with all alignment options
+  // or
+  ->buttons(['textAlign']) // Separate buttons for each alignment
   ->alignments(['left', 'center', 'right', 'justify']) // Available alignments
   ->defaultAlignment('left') // Default text alignment
 ```
