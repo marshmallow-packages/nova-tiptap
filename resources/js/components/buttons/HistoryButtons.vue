@@ -7,7 +7,7 @@
             :clickMethod="changeHistory"
             :clickMethodParameters="direction"
             :title="__(direction)"
-            :icon="['fas', direction+'-alt']"
+            :icon="direction"
         >
         </base-button>
     </span>

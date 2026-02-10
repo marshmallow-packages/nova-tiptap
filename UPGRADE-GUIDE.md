@@ -1,3 +1,123 @@
+# Nova TipTap Upgrade Guide
+
+## Upgrading to v6.0
+
+Version 6.0 is a major update that upgrades TipTap from v2 beta to v3 stable and removes the Font Awesome dependency.
+
+### Pre-Upgrade Checklist
+
+- [ ] **Backup your application** before updating
+- [ ] **Check for custom TipTap extensions** that may need updating
+- [ ] **Review any icon customizations** (Font Awesome is removed)
+- [ ] **Test in a staging environment** first if possible
+
+### Step-by-Step Upgrade
+
+#### 1. Update the Package
+
+```bash
+composer update marshmallow/nova-tiptap
+```
+
+#### 2. Clear Nova Assets
+
+```bash
+php artisan nova:publish
+php artisan view:clear
+php artisan cache:clear
+```
+
+#### 3. Clear Browser Cache
+
+Clear your browser cache or do a hard refresh (Ctrl+Shift+R / Cmd+Shift+R) to load the new assets.
+
+### Breaking Changes
+
+#### TipTap v3 Migration
+
+- **History extension renamed**: `History` is now `UndoRedo`
+- **Package consolidation**: Many extension packages are now consolidated:
+  - Lists: `@tiptap/extension-list` (BulletList, OrderedList, ListItem)
+  - Tables: `@tiptap/extension-table` (Table, TableRow, TableCell, TableHeader)
+  - Core: `@tiptap/extensions` (UndoRedo, Placeholder, Dropcursor, Gapcursor)
+
+If you have custom TipTap extensions, you may need to update imports and APIs. See the [TipTap v3 migration guide](https://tiptap.dev/docs/editor/resources/upgrade) for details.
+
+#### Image Extension Change
+
+- **Before**: Separate `@tiptap/extension-image` and `tiptap-extension-resize-image`
+- **After**: Only `tiptap-extension-resize-image` (extended with custom attributes)
+
+The image node type is now `imageResize` instead of `image`. If you have custom code that checks for active images or manipulates image attributes, update accordingly:
+
+```javascript
+// Before
+editor.isActive('image')
+editor.getAttributes('image')
+editor.commands.updateAttributes('image', { ... })
+
+// After
+editor.isActive('imageResize')
+editor.getAttributes('imageResize')
+editor.commands.updateAttributes('imageResize', { ... })
+```
+
+#### Icon Library Change
+
+- **Before**: Font Awesome (free + pro packages)
+- **After**: Custom SVG icons
+
+All toolbar icons have been replaced with custom SVG components. If you customized icons, you'll need to update your customizations to use the new icon system.
+
+#### lowlight API Change
+
+- **Before**: `import { lowlight } from 'lowlight'`
+- **After**: `import { common, createLowlight } from 'lowlight'; const lowlight = createLowlight(common);`
+
+### Dependencies Removed
+
+The following packages are no longer needed and have been removed:
+
+- `@fortawesome/fontawesome-free`
+- `@fortawesome/fontawesome-pro`
+- `@fortawesome/fontawesome-svg-core`
+- `@fortawesome/free-solid-svg-icons`
+- `@fortawesome/pro-regular-svg-icons`
+- `@fortawesome/pro-solid-svg-icons`
+- `@fortawesome/vue-fontawesome`
+- `vue-trix`
+
+### Dependencies Added
+
+- `@floating-ui/dom` (required for TipTap v3 menus)
+- `@heroicons/vue` (optional, available for future use)
+
+### Troubleshooting
+
+#### Icons not appearing
+
+Clear browser cache and do a hard refresh. The new SVG icons are bundled differently than Font Awesome.
+
+#### TipTap editor not loading
+
+1. Check browser console for JavaScript errors
+2. Ensure you've run `npm run production` or `npm run dev` to rebuild assets
+3. Clear all caches: `php artisan cache:clear && php artisan view:clear`
+
+#### Code syntax highlighting broken
+
+The lowlight API changed in v3. If you have custom syntax highlighting configuration, update to use the new `createLowlight()` API.
+
+#### Image resize handles not working
+
+Image resizing is now handled by the `tiptap-extension-resize-image` package exclusively. If you have existing images that don't show resize handles:
+
+1. Click on the image to select it
+2. The resize handles should appear at the corners
+3. If editing image properties (title, alt, class), click the image button in the toolbar after selecting the image
+
+---
+
 # Nova TipTap Security Upgrade Guide
 
 ## 🚨 Critical Security Patch - Immediate Action Required

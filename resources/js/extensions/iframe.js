@@ -1,4 +1,6 @@
 import { Node, mergeAttributes } from '@tiptap/core'
+import { VueNodeViewRenderer } from '@tiptap/vue-3'
+import IframeComponent from '../components/IframeComponent.vue'
 
 export default Node.create({
     name: 'iframe',
@@ -13,7 +15,7 @@ export default Node.create({
                 default: null,
             },
             frameborder: {
-                default: '0',
+                default: 0,
             },
             allowfullscreen: {
                 default: 'true',
@@ -40,6 +42,10 @@ export default Node.create({
 
     renderHTML({ HTMLAttributes }) {
         return ['div', { class: 'iframe-wrapper' }, ['iframe', mergeAttributes(HTMLAttributes)]]
+    },
+
+    addNodeView() {
+        return VueNodeViewRenderer(IframeComponent)
     },
 
     addCommands() {

@@ -5,7 +5,7 @@
         <base-button
             :clickMethod="buttonClickMethod"
             :title="'Table'"
-            :icon="['fas', 'table']"
+            icon="table"
         >
         </base-button>
 
@@ -179,14 +179,14 @@
                                     @click="setCellBackgroundColor(color)">
                                 </div>
                                 <div class="custom-color-option">
-                                    <font-awesome-icon
-                                        :icon="['fas', 'droplet-slash']"
+                                    <tiptap-icon
+                                        name="clear-color"
                                         class="custom-color-option-icon"
                                         @click="setCellBackgroundColor('transparent')" />
                                 </div>
                                 <div class="custom-color-option">
-                                    <font-awesome-icon
-                                        :icon="['fas', 'swatchbook']"
+                                    <tiptap-icon
+                                        name="swatchbook"
                                         class="custom-color-option-icon"
                                         :style="{ color: currentCellBackgroundColor }"
                                         @click="customCellBackgroundClick" />
@@ -222,14 +222,14 @@
                                     @click="setCellBorderColor(color)">
                                 </div>
                                 <div class="custom-color-option">
-                                    <font-awesome-icon
-                                        :icon="['fas', 'droplet-slash']"
+                                    <tiptap-icon
+                                        name="clear-color"
                                         class="custom-color-option-icon"
                                         @click="setCellBorderColor('transparent')" />
                                 </div>
                                 <div class="custom-color-option">
-                                    <font-awesome-icon
-                                        :icon="['fas', 'swatchbook']"
+                                    <tiptap-icon
+                                        name="swatchbook"
                                         class="custom-color-option-icon"
                                         :style="{ color: currentCellBorderColor }"
                                         @click="customCellBorderClick" />
@@ -256,12 +256,12 @@
 
 <script>
 import BaseButton from './BaseButton.vue';
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { TiptapIcon } from '../icons';
 import colorUtils from '../../mixins/colorUtils';
 
 export default {
     props: ['editor', 'tableCellBackgroundColors', 'tableCellBorderColors'],
-    components: {BaseButton,FontAwesomeIcon},
+    components: {BaseButton, TiptapIcon},
     mixins:[colorUtils],
     data() {
         return {

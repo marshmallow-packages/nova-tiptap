@@ -95,6 +95,33 @@ class Tiptap extends Field
     }
 
     /**
+     * Set the buttons that should be available in the bubble menu.
+     * Available options: bold, italic, strike, underline, code, highlight,
+     * subscript, superscript, link, color, backgroundColor, |
+     *
+     * @param array $buttons
+     * @return $this
+     */
+    public function bubbleMenuButtons(array $buttons)
+    {
+        return $this->withMeta([
+            'bubbleMenuButtons' => $buttons,
+        ]);
+    }
+
+    /**
+     * Disable the bubble menu.
+     *
+     * @return $this
+     */
+    public function withoutBubbleMenu()
+    {
+        return $this->withMeta([
+            'bubbleMenu' => false,
+        ]);
+    }
+
+    /**
      * Set the colors that should be available when using table cell background color selector.
      *
      * @param array $colors

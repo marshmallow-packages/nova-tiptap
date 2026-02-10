@@ -4,7 +4,9 @@
 
 # Laravel Nova Tiptap Editor Field
 
-A rich text editor for Laravel Nova based on [tiptap](https://github.com/ueberdosis/tiptap) by [@ueberdosis](https://github.com/ueberdosis).
+A powerful rich text editor for Laravel Nova built on [TipTap v3](https://tiptap.dev).
+
+![Nova TipTap Editor](readme-images/editor-v6.png)
 
 > [!Warning]
 > When updating from `manogi/nova-tiptap`, replace all instances of `Manogi\Tiptap\Tiptap` with `Marshmallow\Tiptap\Tiptap`.
@@ -161,8 +163,8 @@ Tiptap::make('Content')
 
 Two code formatting options are available:
 
--   `code` - Inline code formatting (`<code>text</code>`)
--   `codeBlock` - Block code formatting (`<pre><code>text</code></pre>`)
+- `code` - Inline code formatting (`<code>text</code>`)
+- `codeBlock` - Block code formatting (`<pre><code>text</code></pre>`)
 
 Enable syntax highlighting for code blocks:
 
@@ -263,14 +265,6 @@ Tiptap::make('Content')
 ## Index View Visibility
 
 Like other rich text fields, this field is hidden from index views. You can display it using a [computed field](https://nova.laravel.com/docs/v5/installation#computed-fields).
-
-## Screenshots
-
-![Editor with all buttons](readme-images/all-buttons.png)
-
-The editor adapts to Nova's theme:
-
-![Editor with Stripe theme](readme-images/stripe-theme.png)
 
 ## License
 

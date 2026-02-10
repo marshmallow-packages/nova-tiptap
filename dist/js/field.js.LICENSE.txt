@@ -6,18 +6,6 @@
  */
 
 /*!
- * Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com
- * License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License)
- * Copyright 2024 Fonticons, Inc.
- */
-
-/*!
- * Font Awesome Pro 6.7.2 by @fontawesome - https://fontawesome.com
- * License - https://fontawesome.com/license (Commercial License)
- * Copyright 2024 Fonticons, Inc.
- */
-
-/*!
  * The buffer module from node.js, for the browser.
  *
  * @author   Feross Aboukhadijeh <http://feross.org>
@@ -60,7 +48,11 @@
 
 /*! Axios v1.12.2 Copyright (c) 2025 Matt Zabriskie and contributors */
 
+/*! Axios v1.13.5 Copyright (c) 2026 Matt Zabriskie and contributors */
+
 /*! ieee754. BSD-3-Clause License. Feross Aboukhadijeh <https://feross.org/opensource> */
+
+/*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */
 
 /**
  * @license

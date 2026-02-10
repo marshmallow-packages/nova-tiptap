@@ -31,43 +31,30 @@ export default {
         },
 
         icon() {
-            if (this.button == 'bold') {
-                return ['fas', 'bold'];
-            } else if (this.button == 'italic') {
-                return ['fas', 'italic'];
-            } else if (this.button == 'highlight') {
-                return ['fas', 'highlighter'];
-            } else if (this.button == 'strike') {
-                return ['fas', 'strikethrough'];
-            } else if (this.button == 'underline') {
-                return ['fas', 'underline'];
-            } else if (this.button == 'blockquote') {
-                return ['fas', 'quote-right'];
-            } else if (this.button == 'bulletList') {
-                return ['fas', 'list-ul'];
-            } else if (this.button == 'orderedList') {
-                return ['fas', 'list-ol'];
-            } else if (this.button == 'horizontalRule') {
-                return ['fas', 'horizontal-rule'];
-            } else if (this.button == 'table') {
-                return ['fas', 'table'];
-            } else if (this.button == 'subscript') {
-                return ['fas', 'subscript'];
-            } else if (this.button == 'superscript') {
-                return ['fas', 'superscript'];
-            } else if (this.button == 'paragraph') {
-                return ['fas', 'paragraph'];
+            const iconMap = {
+                'bold': 'bold',
+                'italic': 'italic',
+                'highlight': 'highlighter',
+                'strike': 'strikethrough',
+                'underline': 'underline',
+                'blockquote': 'blockquote',
+                'bulletList': 'bullet-list',
+                'orderedList': 'ordered-list',
+                'horizontalRule': 'horizontal-rule',
+                'table': 'table',
+                'subscript': 'subscript',
+                'superscript': 'superscript',
+                'paragraph': 'paragraph',
+                'code': 'code',
+                'codeBlock': 'code-block',
+                'imageUpload': 'image-upload',
             }
 
-            return null;
+            return iconMap[this.button] || null
         },
 
         innerHtml() {
-            if (this.button == 'code') {
-                return '<span> &lt;&gt; </span>';
-            } else if (this.button == 'codeBlock') {
-                return '<span> &lt;/&gt; </span>';
-            } else if (this.button == 'hardBreak') {
+            if (this.button == 'hardBreak') {
                 return '<span> BR </span>';
             }
 
@@ -110,6 +97,8 @@ export default {
               command.setHardBreak();
             } else if (this.button == 'paragraph') {
               command.setParagraph();
+            } else if (this.button == 'imageUpload') {
+              command.setImageUpload();
             }
 
             command.run();
