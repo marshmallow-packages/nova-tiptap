@@ -161,6 +161,14 @@
                                 ></table-button>
                             </template>
 
+                            <template v-else-if="button == 'clearFormatting'">
+                                <clear-formatting-button
+                                    :editor="editor"
+                                    :mode="mode"
+                                >
+                                </clear-formatting-button>
+                            </template>
+
                             <template v-else>
                                 <normal-button
                                     :editor="editor"
@@ -450,6 +458,7 @@
     import ImageButton from "./buttons/ImageButton";
     import PlaceholderBlockButton from "./buttons/PlaceholderBlockButton";
     import ContentBlockButton from "./buttons/ContentBlockButton";
+    import ClearFormattingButton from "./buttons/ClearFormattingButton.vue";
     import BaseButton from "./buttons/BaseButton.vue";
     import { TiptapIcon } from "./icons";
     import ColorButton from "./buttons/ColorButton.vue";
@@ -487,6 +496,7 @@
         components: {
             TableButton,
             ColorButton,
+            ClearFormattingButton,
             EditorContent,
             BubbleMenu,
             LinkButton,
@@ -531,6 +541,12 @@
                 bubbleColorOpen: false,
                 bubbleBgColorOpen: false,
             };
+        },
+
+        beforeUnmount() {
+            if (this.editor) {
+                this.editor.off('paste', this.handlePaste);
+            }
         },
 
         watch: {
@@ -745,6 +761,40 @@
                 this.bubbleLinkOpen = false;
                 this.bubbleColorOpen = false;
                 this.bubbleBgColorOpen = false;
+            },
+
+            shouldPasteAsPlainText(event) {
+                return event.shiftKey && !event.altKey && !event.metaKey && !event.ctrlKey;
+            },
+
+            insertPlainTextFromClipboard(editor, event) {
+                const text = event.clipboardData?.getData('text/plain');
+
+                if (typeof text !== 'string' || text.length === 0) {
+                    return false;
+                }
+
+                editor.chain().focus().insertContent(text).run();
+
+                return true;
+            },
+
+            handlePaste(event) {
+                if (!this.currentField.enablePlainTextPasteShortcut) {
+                    return false;
+                }
+
+                if (!this.shouldPasteAsPlainText(event)) {
+                    return false;
+                }
+
+                const handled = this.insertPlainTextFromClipboard(this.editor, event);
+
+                if (handled) {
+                    event.preventDefault();
+                }
+
+                return handled;
             },
 
             async uploadImage(file) {
@@ -978,6 +1028,9 @@
                 extensions: extensions,
                 content: this.contentWithTrailingParagraph,
                 editable: !this.currentField.readonly,
+                editorProps: {
+                    handlePaste: (_view, event) => this.handlePaste(event),
+                },
                 onCreate() {
                     try {
                         let content = JSON.parse(context.value);

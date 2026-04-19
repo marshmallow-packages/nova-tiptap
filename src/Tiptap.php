@@ -122,6 +122,18 @@ class Tiptap extends Field
     }
 
     /**
+     * Enable Shift+Paste to insert clipboard text as plain text.
+     *
+     * @return $this
+     */
+    public function enablePlainTextPasteShortcut()
+    {
+        return $this->withMeta([
+            'enablePlainTextPasteShortcut' => true,
+        ]);
+    }
+
+    /**
      * Set the colors that should be available when using table cell background color selector.
      *
      * @param array $colors
