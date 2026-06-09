@@ -76,6 +76,7 @@ Tiptap::make('Content')
 | `hardBreak`        | Hard line break                                                                                 |
 | `history`          | Undo/redo functionality                                                                         |
 | `editHtml`         | HTML source code editor                                                                         |
+| `clearFormatting`  | Remove inline formatting and reset selected content to plain paragraph/list structure           |
 | `\|`               | Vertical divider in toolbar (special)                                                           |
 | `br`               | Line break in toolbar (special)                                                                 |
 
@@ -148,6 +149,15 @@ Tiptap::make('Content')
     'disk' => 'public',
     'path' => 'uploads/images',
   ])
+```
+
+### Plain Text Paste
+
+When enabled, users can paste as plain text by using `Shift + Paste` in the editor. This strips formatting from sources like Word or websites before insertion.
+
+```php
+Tiptap::make('Content')
+  ->enablePlainTextPasteShortcut()
 ```
 
 ### Bubble Menu
