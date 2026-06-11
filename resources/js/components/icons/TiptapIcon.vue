@@ -51,6 +51,7 @@
     import ColorIcon from './ColorIcon.vue'
     import BackgroundColorIcon from './BackgroundColorIcon.vue'
     import ClearColorIcon from './ClearColorIcon.vue'
+    import ClearFormattingIcon from './ClearFormattingIcon.vue'
     import PlaceholderBlockIcon from './PlaceholderBlockIcon.vue'
     import ContentBlockIcon from './ContentBlockIcon.vue'
     import TrashIcon from './TrashIcon.vue'
@@ -113,6 +114,8 @@
         'pen-fancy': BackgroundColorIcon,
         'clear-color': ClearColorIcon,
         'droplet-slash': ClearColorIcon,
+        'clear-formatting': ClearFormattingIcon,
+        'clearFormatting': ClearFormattingIcon,
         'placeholder-block': PlaceholderBlockIcon,
         'placeholderBlock': PlaceholderBlockIcon,
         'cube': PlaceholderBlockIcon,
