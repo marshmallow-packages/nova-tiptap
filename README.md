@@ -245,6 +245,13 @@ Tiptap::make('Content')
 
 Available themes are listed on [CodeMirror's theme demo page](https://codemirror.net/demo/theme.html).
 
+### Placeholder
+
+```php
+Tiptap::make('Content')
+  ->placeholder('Start writing...') // Placeholder shown when the editor is empty
+```
+
 ### JSON Storage
 
 ```php
@@ -326,6 +333,40 @@ Tiptap::make('Content')
 ## Index View Visibility
 
 Like other rich text fields, this field is hidden from index views. You can display it using a [computed field](https://nova.laravel.com/docs/v5/installation#computed-fields).
+
+## Configuration
+
+Most options can be set per field as shown above. To change the global defaults, publish the configuration file:
+
+```bash
+php artisan vendor:publish --tag=nova-tiptap-config
+```
+
+This creates `config/nova-tiptap.php` with the following options:
+
+| Key                                | Default                                                     | Description                                                                                  |
+| ---------------------------------- | ---------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| `prune_images`                     | `false`                                                    | Globally enable automatic pruning of uploaded images that are removed from content.          |
+| `image_storage.disk`               | `public`                                                   | Default storage disk for image uploads when not set on the field.                            |
+| `image_storage.path`               | `''`                                                       | Default path within the disk for image uploads.                                              |
+| `file_storage.disk`                | `public`                                                   | Default storage disk for file uploads when not set on the field.                             |
+| `file_storage.path`                | `''`                                                       | Default path within the disk for file uploads.                                               |
+| `upload.max_image_size`            | `5242880` (5MB)                                            | Maximum image upload size in bytes.                                                          |
+| `upload.max_file_size`             | `10485760` (10MB)                                          | Maximum file upload size in bytes.                                                           |
+| `upload.allowed_image_extensions`  | `jpg, jpeg, png, gif, webp, svg`                           | Allowed extensions for image uploads.                                                        |
+| `upload.allowed_file_extensions`   | `pdf, doc, docx, xls, …, mp4, mov, wmv`                    | Allowed extensions for file uploads.                                                         |
+| `upload.allowed_disks`             | `public, local`                                            | Disks permitted for uploads. For security, only listed disks are allowed.                    |
+| `upload.strict_mime_checking`      | `true`                                                     | Validate that file content matches its extension.                                            |
+
+## Credits
+
+This package is maintained by [Marshmallow](https://github.com/marshmallow-packages) and is a fork of the original [`bastihilger/nova-tiptap`](https://github.com/bastihilger/nova-tiptap) by Sebastian Hilger.
+
+- [All Contributors](https://github.com/marshmallow-packages/nova-tiptap/contributors)
+
+## Security
+
+If you discover any security related issues, please email [security@marshmallow.dev](mailto:security@marshmallow.dev) instead of using the issue tracker.
 
 ## License
 
